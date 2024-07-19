@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BubbleWhatsapp">
+        <attr name="messageType" format="flags">
+            <flag name="incoming" value="0"/>
+            <flag name="outgoing" value="1"/>
+        </attr>
+        <attr name="backgroundStyle" format="flags">
+            <flag name="android" value="0" />
+            <flag name="iOS" value="1" />
+        </attr>
+        <attr name="cornerRadius" />
+        <attr name="backgroundColor" />
+        <attr name="useCompatPadding" />
+        <attr name="elevation"/>
+        <attr name="android:shadowColor"/>
+    </declare-styleable>
+
+    <declare-styleable name="BubbleTelegram">
+        <attr name="messageType" />
+        <attr name="cornerRadius" />
+        <attr name="backgroundColor" />
+        <attr name="useCompatPadding" />
+        <attr name="elevation"/>
+        <attr name="android:shadowColor"/>
+    </declare-styleable>
+
+</resources>
