@@ -6,7 +6,52 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8CB688"
-    tools:context=".details.ActTelegram">
+    android:background="#92BB86"
+    tools:context=".providers.ActTelegram">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical">
+
+        <com.erif.bubble.telegram.BubbleTelegram
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:elevation="2dp"
+            app:cornerRadius="45dp"
+            android:shadowColor="#72896C">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:maxWidth="280dp"
+                android:textColor="@android:color/black"
+                android:text="@string/lorem"/>
+
+        </com.erif.bubble.telegram.BubbleTelegram>
+
+        <com.erif.bubble.telegram.BubbleTelegram
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            app:elevation="2.5dp"
+            app:cornerRadius="25dp"
+            app:messageType="outgoing"
+            android:shadowColor="#72896C"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:maxWidth="280dp"
+                android:textColor="@android:color/black"
+                android:text="@string/lorem"/>
+
+        </com.erif.bubble.telegram.BubbleTelegram>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

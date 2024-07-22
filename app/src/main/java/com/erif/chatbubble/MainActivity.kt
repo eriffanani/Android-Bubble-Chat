@@ -8,12 +8,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.erif.chatbubble.adapter.AdapterMenu
-import com.erif.chatbubble.adapter.ItemMenu
-import com.erif.chatbubble.details.ActInstagram
-import com.erif.chatbubble.details.ActLine
-import com.erif.chatbubble.details.ActTelegram
-import com.erif.chatbubble.details.ActWhatsapp
+import com.erif.chatbubble.adapter.menu.AdapterMenu
+import com.erif.chatbubble.adapter.menu.ItemMenu
+import com.erif.chatbubble.providers.ActInstagram
+import com.erif.chatbubble.providers.ActLine
+import com.erif.chatbubble.providers.ActTelegram
+import com.erif.chatbubble.providers.ActWhatsapp
 
 class MainActivity : AppCompatActivity(), AdapterMenu.OnClickListener {
 

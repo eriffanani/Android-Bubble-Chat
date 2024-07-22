@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.erif.bubble.R;
 
@@ -23,6 +24,7 @@ public class BubbleWhatsapp extends FrameLayout {
     private int shadowColor;
     private float curveWidth = 34f;
     private boolean useCompatPadding = true;
+    private float elevation = 0f;
 
     // Message Type
     public static final int INCOMING = 0;
@@ -68,16 +70,16 @@ public class BubbleWhatsapp extends FrameLayout {
                 float cornerRadius = typedArray.getDimension(R.styleable.BubbleWhatsapp_cornerRadius, 0f);
                 bubbleCreator.cornerRadius(cornerRadius);
 
-                float elevation = typedArray.getDimension(R.styleable.BubbleWhatsapp_elevation, 6f);
+                elevation = typedArray.getDimension(R.styleable.BubbleWhatsapp_elevation, 6f);
                 bubbleCreator.elevation(elevation);
 
                 int colorIncoming = Color.WHITE;
-                int colorOutgoing = Color.parseColor("#C3F8C5");
-                backgroundColor = messageType == INCOMING ? colorIncoming : colorOutgoing;
-                backgroundColor = typedArray.getColor(R.styleable.BubbleWhatsapp_backgroundColor, Color.WHITE);
+                int colorOutgoing = Color.parseColor("#E1FFD4");
+                int defaultBackgroundColor = messageType == INCOMING ? colorIncoming : colorOutgoing;
+                backgroundColor = typedArray.getColor(R.styleable.BubbleWhatsapp_backgroundColor, defaultBackgroundColor);
                 useCompatPadding = typedArray.getBoolean(R.styleable.BubbleWhatsapp_useCompatPadding, true);
                 backgroundStyle = typedArray.getInteger(R.styleable.BubbleWhatsapp_backgroundStyle, ANDROID);
-                int defaultColorShadow = Color.parseColor("#E6E6E6");
+                int defaultColorShadow = ContextCompat.getColor(context, R.color.bubble_chat_shadow_color);
                 shadowColor = typedArray.getColor(R.styleable.BubbleWhatsapp_android_shadowColor, defaultColorShadow);
 
                 curveWidth = backgroundStyle == IOS ? 28f : 34f;
@@ -97,7 +99,7 @@ public class BubbleWhatsapp extends FrameLayout {
         paintShadow.setStyle(Paint.Style.FILL);
         paintShadow.setColor(shadowColor);
         paintShadow.setMaskFilter(new BlurMaskFilter(
-                8f, BlurMaskFilter.Blur.NORMAL
+                Math.min(Math.max(1f, elevation), 20f), BlurMaskFilter.Blur.NORMAL
         ));
         setLayerType(LAYER_TYPE_SOFTWARE, paintShadow);
 

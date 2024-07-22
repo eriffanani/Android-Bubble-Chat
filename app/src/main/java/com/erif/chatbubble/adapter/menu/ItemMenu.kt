@@ -1,4 +1,4 @@
-package com.erif.chatbubble.adapter
+package com.erif.chatbubble.adapter.menu
 
 data class ItemMenu (
     val id: Int,

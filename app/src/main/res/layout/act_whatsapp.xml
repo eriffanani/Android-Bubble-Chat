@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFE9E0"
-    tools:context=".details.ActWhatsapp">
+    tools:context=".providers.ActWhatsapp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,10 +24,9 @@
             <com.erif.bubble.whatsapp.BubbleWhatsapp
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cornerRadius="12dp"
-                app:elevation="3dp"
-                app:backgroundStyle="iOS"
-                android:shadowColor="#E1E1E1">
+                app:cornerRadius="20dp"
+                app:elevation="2dp"
+                app:backgroundStyle="iOS">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -49,9 +48,8 @@
             android:layout_marginTop="20dp"
             app:messageType="outgoing"
             app:backgroundColor="#E1FFD4"
-            app:cornerRadius="12dp"
+            app:cornerRadius="26dp"
             app:elevation="3dp"
-            android:shadowColor="#E1E1E1"
             app:backgroundStyle="android">
 
             <TextView
@@ -60,7 +58,7 @@
                 android:textSize="15sp"
                 android:textColor="@android:color/black"
                 android:includeFontPadding="false"
-                android:text="Yo wes mbalek ndek mas imam" />
+                android:text="@string/lorem" />
 
         </com.erif.bubble.whatsapp.BubbleWhatsapp>
 

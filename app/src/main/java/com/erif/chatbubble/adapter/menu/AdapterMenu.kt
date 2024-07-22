@@ -1,4 +1,4 @@
-package com.erif.chatbubble.adapter
+package com.erif.chatbubble.adapter.menu
 
 import android.view.LayoutInflater
 import android.view.View

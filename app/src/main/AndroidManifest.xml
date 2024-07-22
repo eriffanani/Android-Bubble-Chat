@@ -13,16 +13,16 @@
         android:theme="@style/Theme.ChatBubble"
         tools:targetApi="31">
         <activity
-            android:name=".details.ActInstagram"
+            android:name=".providers.ActInstagram"
             android:exported="false" />
         <activity
-            android:name=".details.ActLine"
+            android:name=".providers.ActLine"
             android:exported="false" />
         <activity
-            android:name=".details.ActTelegram"
+            android:name=".providers.ActTelegram"
             android:exported="false" />
         <activity
-            android:name=".details.ActWhatsapp"
+            android:name=".providers.ActWhatsapp"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

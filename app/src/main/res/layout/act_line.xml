@@ -7,6 +7,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#849EBF"
-    tools:context=".details.ActLine">
+    tools:context=".providers.ActLine">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical">
+
+        <com.erif.bubble.line.BubbleLine
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:elevation="3dp"
+            app:cornerRadius="24dp"
+            android:shadowColor="#79889B">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxWidth="230dp"
+                android:includeFontPadding="false"
+                android:textColor="@android:color/black"
+                android:text="@string/lorem"/>
+
+        </com.erif.bubble.line.BubbleLine>
+
+        <com.erif.bubble.line.BubbleLine
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:elevation="4dp"
+            app:cornerRadius="25dp"
+            android:shadowColor="#79889B">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:maxWidth="230dp"
+                android:includeFontPadding="false"
+                android:textColor="@android:color/black"
+                android:text="Oh, OK deh, nanti aku coba cariin yang bagus ya"/>
+
+        </com.erif.bubble.line.BubbleLine>
+
+        <com.erif.bubble.line.BubbleLine
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            app:elevation="2dp"
+            app:cornerRadius="25dp"
+            app:messageType="outgoing"
+            android:shadowColor="#79889B"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:text="@string/lorem"/>
+
+        </com.erif.bubble.line.BubbleLine>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

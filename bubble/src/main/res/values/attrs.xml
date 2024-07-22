@@ -25,4 +25,13 @@
         <attr name="android:shadowColor"/>
     </declare-styleable>
 
+    <declare-styleable name="BubbleLine">
+        <attr name="messageType" />
+        <attr name="cornerRadius" />
+        <attr name="backgroundColor" />
+        <attr name="useCompatPadding" />
+        <attr name="elevation"/>
+        <attr name="android:shadowColor"/>
+    </declare-styleable>
+
 </resources>
