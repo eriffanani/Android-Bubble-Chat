@@ -12,6 +12,7 @@ import com.erif.chatbubble.adapter.menu.AdapterMenu
 import com.erif.chatbubble.adapter.menu.ItemMenu
 import com.erif.chatbubble.providers.ActInstagram
 import com.erif.chatbubble.providers.ActLine
+import com.erif.chatbubble.providers.ActSms
 import com.erif.chatbubble.providers.ActTelegram
 import com.erif.chatbubble.providers.ActWhatsapp
 
@@ -30,10 +31,11 @@ class MainActivity : AppCompatActivity(), AdapterMenu.OnClickListener {
         }
         val arrIcon = arrayOf(
             R.drawable.ic_wa, R.drawable.ic_tele,
-            R.drawable.ic_line, R.drawable.ic_ig
+            R.drawable.ic_line, R.drawable.ic_ig,
+            R.drawable.ic_sms
         )
         val arrName = arrayOf(
-            "Whatsapp", "Telegram", "Line", "Instagram"
+            "Whatsapp", "Telegram", "Line", "Instagram", "SMS"
         )
         val list: MutableList<ItemMenu> = ArrayList()
         arrIcon.forEachIndexed { i, icon ->
@@ -52,6 +54,8 @@ class MainActivity : AppCompatActivity(), AdapterMenu.OnClickListener {
             ActLine::class.java
         } else if (item.name.contains("insta", true)){
             ActInstagram::class.java
+        } else if (item.name.contains("sms", true)){
+            ActSms::class.java
         } else {
             ActWhatsapp::class.java
         }
