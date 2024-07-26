@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.erif.bubble.line.BubbleLine
+        android:id="@+id/item_chat_line_outgoing_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:elevation="2dp"
+        app:cornerRadius="22dp"
+        android:shadowColor="#79889B"
+        android:layout_marginEnd="8dp"
+        android:layout_gravity="end"
+        app:messageType="outgoing">
+
+        <TextView
+            android:id="@+id/item_chat_line_outgoing_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Example"
+            android:maxWidth="280dp"
+            android:includeFontPadding="false"
+            android:textSize="16sp"/>
+
+    </com.erif.bubble.line.BubbleLine>
+
+</FrameLayout>

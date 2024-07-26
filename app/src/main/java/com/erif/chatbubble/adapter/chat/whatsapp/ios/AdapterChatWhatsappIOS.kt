@@ -19,7 +19,7 @@ class AdapterChatWhatsappIOS(
             ))
         } else {
             HolderIncoming(inflater.inflate(
-                    R.layout.item_chat_wa_android, parent, false
+                    R.layout.item_chat_wa_android_incoming, parent, false
             ))
         }
     }

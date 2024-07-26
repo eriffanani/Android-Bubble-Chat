@@ -6,17 +6,21 @@
     android:layout_height="wrap_content">
 
     <com.erif.bubble.whatsapp.BubbleWhatsapp
-        android:id="@+id/item_bubble"
+        android:id="@+id/item_chat_wa_android_incoming_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cornerRadius="12dp"
-        app:elevation="3dp">
+        app:cornerRadius="20dp"
+        app:elevation="2dp"
+        android:layout_marginStart="8dp"
+        android:shadowColor="#DFDAD2">
 
         <TextView
-            android:id="@+id/item_chat_txt"
+            android:id="@+id/item_chat_wa_android_incoming_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:includeFontPadding="false"
+            android:textSize="16sp"
+            android:text="Example"
             android:maxWidth="280dp"/>
 
     </com.erif.bubble.whatsapp.BubbleWhatsapp>

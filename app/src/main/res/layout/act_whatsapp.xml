@@ -9,59 +9,11 @@
     android:background="#EFE9E0"
     tools:context=".providers.ActWhatsapp">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/act_wa_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.erif.bubble.whatsapp.BubbleWhatsapp
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cornerRadius="20dp"
-                app:elevation="2dp"
-                app:backgroundStyle="iOS">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-                    android:maxWidth="300dp"
-                    android:textColor="@android:color/black"
-                    android:includeFontPadding="false"
-                    android:text="Yo wes mbalek ndek mas imam" />
-
-            </com.erif.bubble.whatsapp.BubbleWhatsapp>
-
-        </RelativeLayout>
-
-        <com.erif.bubble.whatsapp.BubbleWhatsapp
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="20dp"
-            app:messageType="outgoing"
-            app:backgroundColor="#E1FFD4"
-            app:cornerRadius="26dp"
-            app:elevation="3dp"
-            app:backgroundStyle="android">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="@android:color/black"
-                android:includeFontPadding="false"
-                android:text="@string/lorem" />
-
-        </com.erif.bubble.whatsapp.BubbleWhatsapp>
-
-    </LinearLayout>
+        tools:itemCount="10"
+        tools:listitem="@layout/item_chat_wa_android_incoming"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

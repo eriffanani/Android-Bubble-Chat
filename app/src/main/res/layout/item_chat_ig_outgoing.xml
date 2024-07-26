@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp">
+
+    <com.erif.bubble.instagram.BubbleInstagram
+        android:id="@+id/item_chat_ig_outgoing_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        app:messageType="outgoing"
+        app:cornerRadius="25dp"
+        app:elevation="0dp"
+        android:layout_marginEnd="8dp">
+
+        <TextView
+            android:id="@+id/item_chat_ig_outgoing_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Example"
+            android:maxWidth="280dp"
+            android:includeFontPadding="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+    </com.erif.bubble.instagram.BubbleInstagram>
+
+</FrameLayout>

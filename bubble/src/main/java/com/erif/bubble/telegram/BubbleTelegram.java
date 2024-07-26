@@ -36,6 +36,10 @@ public class BubbleTelegram extends FrameLayout {
     public static final int OUTGOING = 1;
     private int messageType = INCOMING;
 
+    public static final int LATEST = 0;
+    public static final int OLDEST = 1;
+    private int bubbleCondition = LATEST;
+
     public BubbleTelegram(@NonNull Context context) {
         super(context);
         init(context, null, 0);
@@ -184,6 +188,11 @@ public class BubbleTelegram extends FrameLayout {
         path.quadTo(rightCard, top, rightCard - mCorner, top); // Corner Top Right
 
         return path;
+    }
+
+    public void setBubbleCondition(int condition) {
+        this.bubbleCondition = condition;
+        invalidate();
     }
 
 }

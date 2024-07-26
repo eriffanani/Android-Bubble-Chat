@@ -3,7 +3,10 @@ package com.erif.chatbubble.adapter.chat.line
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.erif.bubble.instagram.BubbleInstagram
+import com.erif.bubble.line.BubbleLine
 import com.erif.chatbubble.R
 import com.erif.chatbubble.adapter.chat.ItemChat
 
@@ -15,11 +18,11 @@ class AdapterChatLine(
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == 1) {
             HolderOutgoing(inflater.inflate(
-                    R.layout.item_chat_wa_android_outgoing, parent, false
+                    R.layout.item_chat_line_outgoing, parent, false
             ))
         } else {
             HolderIncoming(inflater.inflate(
-                    R.layout.item_chat_wa_android, parent, false
+                    R.layout.item_chat_line_incoming, parent, false
             ))
         }
     }
@@ -40,8 +43,12 @@ class AdapterChatLine(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: ItemChat) {
+        private val bubble: BubbleLine = itemView.findViewById(R.id.item_chat_line_incoming_bubble)
+        private val txt: TextView = itemView.findViewById(R.id.item_chat_line_incoming_txt)
 
+        fun bind(item: ItemChat) {
+            txt.text = item.message
+            bubble.setBubbleCondition(item.condition)
         }
 
     }
@@ -50,8 +57,12 @@ class AdapterChatLine(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: ItemChat) {
+        private val bubble: BubbleLine = itemView.findViewById(R.id.item_chat_line_outgoing_bubble)
+        private val txt: TextView = itemView.findViewById(R.id.item_chat_line_outgoing_txt)
 
+        fun bind(item: ItemChat) {
+            txt.text = item.message
+            bubble.setBubbleCondition(item.condition)
         }
 
     }

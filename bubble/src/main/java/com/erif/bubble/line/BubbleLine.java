@@ -34,6 +34,10 @@ public class BubbleLine extends FrameLayout {
     public static final int OUTGOING = 1;
     private int messageType = INCOMING;
 
+    private static final int LATEST = 0;
+    private static final int OLDEST = 1;
+    private int bubbleCondition = LATEST;
+
     public BubbleLine(@NonNull Context context) {
         super(context);
         init(context, null, 0);
@@ -129,7 +133,7 @@ public class BubbleLine extends FrameLayout {
         float top = isShadow ? 0f : (mElevation / 3f);
         float right = isShadow ? width : width - (mElevation / 1.5f);
         float bottom = isShadow ? height : height - (mElevation / 1.4f);
-        float maxCorner = Math.min(cornerRadius, height / 1.86f);
+        float maxCorner = Math.min(cornerRadius, height / 1.88f);
         float mCorner = isShadow ? (maxCorner + 10f) : maxCorner;
 
         float leftCard = isShadow ? curveWidth : curveWidth + (mElevation / 1.6f);
@@ -168,7 +172,7 @@ public class BubbleLine extends FrameLayout {
         float top = isShadow ? 0f : (mElevation / 3f);
         float right = isShadow ? width : width - (mElevation / 1.5f);
         float bottom = isShadow ? height : height - (mElevation / 1.4f);
-        float maxCorner = Math.min(cornerRadius, height / 1.86f);
+        float maxCorner = Math.min(cornerRadius, height / 1.88f);
         float mCorner = isShadow ? (maxCorner + 10f) : maxCorner;
 
         float rightCard = isShadow ? right - curveWidth : right - curveWidth + (mElevation / 1.6f);
@@ -177,14 +181,14 @@ public class BubbleLine extends FrameLayout {
         path.lineTo(rightCard - mCorner, top); // Top Right
         float curveSmallX = (rightCard - mCorner) + (mCorner / 1.35f);
         float curveSmallY = mCorner / 5f;
-        float distanceCornerToCurveX = rightCard - mCorner + curveSmallX;
+        float distanceCornerToCurveX = mCorner / 1.35f;
         path.quadTo( // Corner Top Right
-                rightCard + mCorner - (distanceCornerToCurveX / 1.6f), top,
+                rightCard - mCorner + (distanceCornerToCurveX / 1.6f), top,
                 curveSmallX, top + curveSmallY
         );
-        path.quadTo(rightCard, 28f, right + 8f, top + 4f); // Curved Top
-        path.lineTo(right + 4f, top + 4f); // Curved Connection
-        path.quadTo(rightCard / 2f, 38f, rightCard, top + 44f); // Curved Bottom
+        path.quadTo(rightCard, 28f, right - 8f, top + 4f); // Curved Top
+        path.lineTo(right - 4f, top + 4f); // Curved Connection
+        path.quadTo(rightCard + ((right - rightCard) / 2f), 38f, rightCard, top + 44f); // Curved Bottom
 
         path.lineTo(rightCard, bottom - mCorner); // Bottom Right
         path.quadTo(rightCard, bottom, rightCard - mCorner, bottom); // Corner Bottom Right
@@ -196,6 +200,11 @@ public class BubbleLine extends FrameLayout {
         path.quadTo(left, top, left + mCorner, top); // Corner Top Left
 
         return path;
+    }
+
+    public void setBubbleCondition(int condition) {
+        this.bubbleCondition = condition;
+        invalidate();
     }
 
 }

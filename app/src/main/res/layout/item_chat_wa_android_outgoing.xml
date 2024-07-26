@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <com.erif.bubble.whatsapp.BubbleWhatsapp
+        android:id="@+id/item_chat_wa_android_outgoing_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:messageType="outgoing"
+        app:cornerRadius="20dp"
+        app:elevation="2dp"
+        android:layout_marginEnd="8dp"
+        android:layout_gravity="end"
+        android:shadowColor="#DFDAD2">
+
+        <TextView
+            android:id="@+id/item_chat_wa_android_outgoing_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:textSize="16sp"
+            android:text="Example"
+            android:maxWidth="280dp"/>
+
+    </com.erif.bubble.whatsapp.BubbleWhatsapp>
 
 </FrameLayout>

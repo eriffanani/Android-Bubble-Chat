@@ -31,6 +31,11 @@ public class BubbleWhatsapp extends FrameLayout {
     public static final int OUTGOING = 1;
     private int messageType = OUTGOING;
 
+    // Message Type
+    public static final int LATEST = 0;
+    public static final int OLDEST = 1;
+    private int bubbleCondition = LATEST;
+
     // Background Type
     public static final int ANDROID = 0;
     public static final int IOS = 1;
@@ -138,6 +143,10 @@ public class BubbleWhatsapp extends FrameLayout {
 
     public void setMessageType(int type) {
         this.messageType = type > OUTGOING ? INCOMING : type;
+    }
+    public void setBubbleCondition(int condition) {
+        this.bubbleCondition = condition;
+        invalidate();
     }
 
 }
