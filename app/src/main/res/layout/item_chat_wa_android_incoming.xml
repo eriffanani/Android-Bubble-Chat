@@ -3,14 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="0.5dp"
+    android:paddingBottom="0.5dp"
+    android:clipToPadding="false">
 
     <com.erif.bubble.whatsapp.BubbleWhatsapp
         android:id="@+id/item_chat_wa_android_incoming_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cornerRadius="20dp"
-        app:elevation="2dp"
+        app:cornerRadius="15dp"
+        app:elevation="2.5dp"
+        app:bubbleCondition="oldest"
         android:layout_marginStart="8dp"
         android:shadowColor="#DFDAD2">
 

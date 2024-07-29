@@ -15,7 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.erif.bubble.Bubbles;
 import com.erif.bubble.R;
+import com.erif.bubble.Bubbles.*;
+
+import dalvik.annotation.optimization.CriticalNative;
 
 public class BubbleLine extends FrameLayout {
 
@@ -34,9 +38,7 @@ public class BubbleLine extends FrameLayout {
     public static final int OUTGOING = 1;
     private int messageType = INCOMING;
 
-    private static final int LATEST = 0;
-    private static final int OLDEST = 1;
-    private int bubbleCondition = LATEST;
+    private int bubbleCondition = BubbleCondition.SINGLE.value;
 
     public BubbleLine(@NonNull Context context) {
         super(context);
@@ -202,8 +204,8 @@ public class BubbleLine extends FrameLayout {
         return path;
     }
 
-    public void setBubbleCondition(int condition) {
-        this.bubbleCondition = condition;
+    public void setBubbleCondition(BubbleCondition condition) {
+        this.bubbleCondition = condition.value;
         invalidate();
     }
 

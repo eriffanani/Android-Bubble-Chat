@@ -17,7 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.erif.bubble.Bubbles;
 import com.erif.bubble.R;
+import com.erif.bubble.Bubbles.*;
 
 public class BubbleInstagram extends FrameLayout {
 
@@ -37,11 +39,7 @@ public class BubbleInstagram extends FrameLayout {
     public static final int OUTGOING = 1;
     private int messageType = INCOMING;
 
-    public static final int SINGLE = 0;
-    public static final int LATEST = 1;
-    public static final int IN_BETWEEN = 2;
-    public static final int OLDEST = 3;
-    private int bubbleCondition = SINGLE;
+    private int bubbleCondition = BubbleCondition.SINGLE.value;
     private final BubbleCreator bubble = new BubbleCreator();
 
     public BubbleInstagram(@NonNull Context context) {
@@ -87,7 +85,8 @@ public class BubbleInstagram extends FrameLayout {
             useCompatPadding = a.getBoolean(R.styleable.BubbleInstagram_useCompatPadding, true);
             int defaultColorShadow = ContextCompat.getColor(context, R.color.bubble_chat_shadow_color);
             shadowColor = a.getColor(R.styleable.BubbleInstagram_android_shadowColor, defaultColorShadow);
-            bubbleCondition = a.getInteger(R.styleable.BubbleInstagram_bubbleCondition, SINGLE);
+            int defaultCondition = BubbleCondition.SINGLE.value;
+            bubbleCondition = a.getInteger(R.styleable.BubbleInstagram_bubbleConditions, defaultCondition);
 
             strokeWidth = a.getDimension(R.styleable.BubbleInstagram_strokeWidth, 0f);
             bubble.setStrokeWidth(strokeWidth);
@@ -129,22 +128,25 @@ public class BubbleInstagram extends FrameLayout {
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         bubble.setSize(getWidth(), getHeight());
+        int oldest = BubbleCondition.OLDEST.value;
+        int inBetween = BubbleCondition.IN_BETWEEN.value;
+        int latest = BubbleCondition.LATEST.value;
         if (messageType == OUTGOING) {
-            if (bubbleCondition == OLDEST) {
+            if (bubbleCondition == oldest) {
                 bubble.outgoing(canvas, paintShadow, paintCard, paintStroke).oldest();
-            } else if (bubbleCondition == IN_BETWEEN) {
+            } else if (bubbleCondition == inBetween) {
                 bubble.outgoing(canvas, paintShadow, paintCard, paintStroke).inBetween();
-            } else if (bubbleCondition == LATEST) {
+            } else if (bubbleCondition == latest) {
                 bubble.outgoing(canvas, paintShadow, paintCard, paintStroke).latest();
             } else { // Single
                 bubble.outgoing(canvas, paintShadow, paintCard, paintStroke).single();
             }
         } else { // Incoming
-            if (bubbleCondition == OLDEST) {
+            if (bubbleCondition == oldest) {
                 bubble.incoming(canvas, paintShadow, paintCard, paintStroke).oldest();
-            } else if (bubbleCondition == IN_BETWEEN) {
+            } else if (bubbleCondition == inBetween) {
                 bubble.incoming(canvas, paintShadow, paintCard, paintStroke).inBetween();
-            } else if (bubbleCondition == LATEST) {
+            } else if (bubbleCondition == latest) {
                 bubble.incoming(canvas, paintShadow, paintCard, paintStroke).latest();
             } else { // Single
                 bubble.incoming(canvas, paintShadow, paintCard, paintStroke).single();
@@ -152,8 +154,8 @@ public class BubbleInstagram extends FrameLayout {
         }
     }
 
-    public void setBubbleCondition(int condition) {
-        this.bubbleCondition = condition;
+    public void setBubbleCondition(Bubbles.BubbleCondition condition) {
+        this.bubbleCondition = condition.value;
         invalidate();
     }
 

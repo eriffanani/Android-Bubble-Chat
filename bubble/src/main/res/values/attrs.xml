@@ -9,55 +9,62 @@
             <flag name="android" value="0" />
             <flag name="iOS" value="1" />
         </attr>
-        <attr name="cornerRadius" />
-        <attr name="backgroundColor" />
-        <attr name="useCompatPadding" />
+        <attr name="cornerRadius"/>
+        <attr name="backgroundColor"/>
+        <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
+        <attr name="bubbleCondition" format="flags">
+            <flag name="latest" value="0" />
+            <flag name="oldest" value="1" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="BubbleTelegram">
-        <attr name="messageType" />
-        <attr name="cornerRadius" />
-        <attr name="backgroundColor" />
-        <attr name="useCompatPadding" />
+        <attr name="messageType"/>
+        <attr name="cornerRadius"/>
+        <attr name="backgroundColor"/>
+        <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
+        <attr name="bubbleCondition"/>
     </declare-styleable>
 
     <declare-styleable name="BubbleLine">
-        <attr name="messageType" />
-        <attr name="cornerRadius" />
-        <attr name="backgroundColor" />
-        <attr name="useCompatPadding" />
+        <attr name="messageType"/>
+        <attr name="cornerRadius"/>
+        <attr name="backgroundColor"/>
+        <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
+        <attr name="bubbleCondition"/>
     </declare-styleable>
 
     <declare-styleable name="BubbleInstagram">
-        <attr name="messageType" />
-        <attr name="cornerRadius" />
-        <attr name="backgroundColor" />
-        <attr name="useCompatPadding" />
+        <attr name="messageType"/>
+        <attr name="cornerRadius"/>
+        <attr name="backgroundColor"/>
+        <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
         <attr name="strokeWidth"/>
         <attr name="strokeColor"/>
-        <attr name="bubbleCondition" format="flags">
-            <flag name="single" value="0" />
-            <flag name="latest" value="1" />
-            <flag name="inBetween" value="2" />
-            <flag name="oldest" value="3" />
+        <attr name="bubbleConditions" format="flags">
+            <flag name="single" value="0"/>
+            <flag name="latest" value="1"/>
+            <flag name="inBetween" value="2"/>
+            <flag name="oldest" value="3"/>
         </attr>
     </declare-styleable>
 
     <declare-styleable name="BubbleSms">
-        <attr name="messageType" />
-        <attr name="cornerRadius" />
-        <attr name="backgroundColor" />
-        <attr name="useCompatPadding" />
+        <attr name="messageType"/>
+        <attr name="cornerRadius"/>
+        <attr name="backgroundColor"/>
+        <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
+        <attr name="bubbleCondition"/>
     </declare-styleable>
 
 </resources>

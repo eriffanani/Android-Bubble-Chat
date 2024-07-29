@@ -1,5 +1,7 @@
 package com.erif.chatbubble.adapter.chat
 
+import com.erif.bubble.Bubbles.BubbleCondition
+
 class Chats {
 
     private val list: MutableList<ItemChat> = ArrayList()
@@ -8,13 +10,14 @@ class Chats {
         private const val INCOMING: Int = 0
         private const val OUTGOING: Int = 1
 
-        private const val SINGLE: Int = 0
-        private const val LATEST: Int = 1
-        private const val IN_BETWEEN: Int = 2
-        private const val OLDEST: Int = 3
+        private val SINGLE = BubbleCondition.SINGLE
+        private val LATEST = BubbleCondition.LATEST
+        private val IN_BETWEEN = BubbleCondition.IN_BETWEEN
+        private val OLDEST = BubbleCondition.OLDEST
     }
 
     init {
+        val single = BubbleCondition.SINGLE
         create(1, "Hai, Rizky! Apa kabar?", INCOMING, SINGLE)
 
         create(2, "Hai, Sarah! Kabar baik.", OUTGOING, OLDEST)
@@ -44,7 +47,7 @@ class Chats {
         list.reverse()
     }
 
-    private fun create(id: Int, message: String?, type: Int, condition: Int) {
+    private fun create(id: Int, message: String?, type: Int, condition: BubbleCondition) {
         list.add(ItemChat(id, message, type, condition))
     }
 

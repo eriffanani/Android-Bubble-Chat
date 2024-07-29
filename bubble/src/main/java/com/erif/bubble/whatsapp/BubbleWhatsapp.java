@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.erif.bubble.Bubbles;
 import com.erif.bubble.R;
 
 public class BubbleWhatsapp extends FrameLayout {
@@ -31,17 +32,15 @@ public class BubbleWhatsapp extends FrameLayout {
     public static final int OUTGOING = 1;
     private int messageType = OUTGOING;
 
-    // Message Type
-    public static final int LATEST = 0;
-    public static final int OLDEST = 1;
-    private int bubbleCondition = LATEST;
+    // Bubble Condition
+    private int bubbleCondition = Bubbles.BubbleCondition.SINGLE.value;
 
     // Background Type
     public static final int ANDROID = 0;
     public static final int IOS = 1;
     private int backgroundStyle = ANDROID;
 
-    private final BubbleCreator bubbleCreator = new BubbleCreator();
+    private final BubbleCreator bubble = new BubbleCreator();
 
     public BubbleWhatsapp(@NonNull Context context) {
         super(context);
@@ -66,31 +65,33 @@ public class BubbleWhatsapp extends FrameLayout {
         setWillNotDraw(false);
         Resources.Theme theme = context.getTheme();
         if (theme != null) {
-            TypedArray typedArray = theme.obtainStyledAttributes(
+            TypedArray a = theme.obtainStyledAttributes(
                     attrs, R.styleable.BubbleWhatsapp, defStyleAttr, 0
             );
             try {
-                messageType = typedArray.getInteger(R.styleable.BubbleWhatsapp_messageType, INCOMING);
+                messageType = a.getInteger(R.styleable.BubbleWhatsapp_messageType, INCOMING);
 
-                float cornerRadius = typedArray.getDimension(R.styleable.BubbleWhatsapp_cornerRadius, 0f);
-                bubbleCreator.cornerRadius(cornerRadius);
+                float cornerRadius = a.getDimension(R.styleable.BubbleWhatsapp_cornerRadius, 0f);
+                bubble.cornerRadius(cornerRadius);
 
-                elevation = typedArray.getDimension(R.styleable.BubbleWhatsapp_elevation, 6f);
-                bubbleCreator.elevation(elevation);
+                elevation = a.getDimension(R.styleable.BubbleWhatsapp_elevation, 6f);
+                bubble.elevation(elevation);
 
                 int colorIncoming = Color.WHITE;
                 int colorOutgoing = Color.parseColor("#E1FFD4");
                 int defaultBackgroundColor = messageType == INCOMING ? colorIncoming : colorOutgoing;
-                backgroundColor = typedArray.getColor(R.styleable.BubbleWhatsapp_backgroundColor, defaultBackgroundColor);
-                useCompatPadding = typedArray.getBoolean(R.styleable.BubbleWhatsapp_useCompatPadding, true);
-                backgroundStyle = typedArray.getInteger(R.styleable.BubbleWhatsapp_backgroundStyle, ANDROID);
+                backgroundColor = a.getColor(R.styleable.BubbleWhatsapp_backgroundColor, defaultBackgroundColor);
+                useCompatPadding = a.getBoolean(R.styleable.BubbleWhatsapp_useCompatPadding, true);
+                backgroundStyle = a.getInteger(R.styleable.BubbleWhatsapp_backgroundStyle, ANDROID);
                 int defaultColorShadow = ContextCompat.getColor(context, R.color.bubble_chat_shadow_color);
-                shadowColor = typedArray.getColor(R.styleable.BubbleWhatsapp_android_shadowColor, defaultColorShadow);
+                shadowColor = a.getColor(R.styleable.BubbleWhatsapp_android_shadowColor, defaultColorShadow);
+                int defaultCondition = Bubbles.BubbleCondition.SINGLE.value;
+                bubbleCondition = a.getInteger(R.styleable.BubbleWhatsapp_bubbleCondition, defaultCondition);
 
                 curveWidth = backgroundStyle == IOS ? 28f : 34f;
-                bubbleCreator.curveWidth(curveWidth);
+                bubble.curveWidth(curveWidth);
             } finally {
-                typedArray.recycle();
+                a.recycle();
             }
         }
 
@@ -125,18 +126,29 @@ public class BubbleWhatsapp extends FrameLayout {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        bubbleCreator.size(getWidth(), getHeight());
-        if (backgroundStyle == IOS) {
-            if (messageType == OUTGOING) {
-                bubbleCreator.iOS().drawOutgoing(canvas, paintShadow, paint);
-            } else {
-                bubbleCreator.iOS().drawIncoming(canvas, paintShadow, paint);
+        bubble.size(getWidth(), getHeight());
+        int single = Bubbles.BubbleCondition.SINGLE.value;
+        int oldest = Bubbles.BubbleCondition.OLDEST.value;
+        if (backgroundStyle == IOS) { // IOS
+            if (messageType == OUTGOING) { // Outgoing
+                bubble.iOS().drawOutgoing(canvas, paintShadow, paint);
+            } else { // Incoming
+                bubble.iOS().drawIncoming(canvas, paintShadow, paint);
             }
-        } else {
-            if (messageType == OUTGOING) {
-                bubbleCreator.android().drawOutgoing(canvas, paintShadow, paint);
-            } else {
-                bubbleCreator.android().drawIncoming(canvas, paintShadow, paint);
+        } else { // Android
+            boolean isSingle = bubbleCondition == single || bubbleCondition == oldest;
+            if (messageType == OUTGOING) { // Outgoing
+                if (isSingle) { // Latest
+                    bubble.android().outgoing().latest(canvas, paintShadow, paint);
+                } else { // Oldest
+                    bubble.android().outgoing().oldest(canvas, paintShadow, paint);
+                }
+            } else { // Incoming
+                if (isSingle) { // Latest
+                    bubble.android().incoming().latest(canvas, paintShadow, paint);
+                } else { // Oldest
+                    bubble.android().incoming().oldest(canvas, paintShadow, paint);
+                }
             }
         }
     }
@@ -144,8 +156,8 @@ public class BubbleWhatsapp extends FrameLayout {
     public void setMessageType(int type) {
         this.messageType = type > OUTGOING ? INCOMING : type;
     }
-    public void setBubbleCondition(int condition) {
-        this.bubbleCondition = condition;
+    public void setBubbleCondition(Bubbles.BubbleCondition condition) {
+        this.bubbleCondition = condition.value;
         invalidate();
     }
 

@@ -8,9 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Xfermode;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
@@ -18,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.erif.bubble.R;
+import com.erif.bubble.Bubbles.*;
 
 public class BubbleTelegram extends FrameLayout {
 
@@ -36,9 +34,7 @@ public class BubbleTelegram extends FrameLayout {
     public static final int OUTGOING = 1;
     private int messageType = INCOMING;
 
-    public static final int LATEST = 0;
-    public static final int OLDEST = 1;
-    private int bubbleCondition = LATEST;
+    private int bubbleCondition = BubbleCondition.SINGLE.value;
 
     public BubbleTelegram(@NonNull Context context) {
         super(context);
@@ -190,8 +186,8 @@ public class BubbleTelegram extends FrameLayout {
         return path;
     }
 
-    public void setBubbleCondition(int condition) {
-        this.bubbleCondition = condition;
+    public void setBubbleCondition(BubbleCondition condition) {
+        this.bubbleCondition = condition.value;
         invalidate();
     }
 
