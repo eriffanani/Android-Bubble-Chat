@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingTop="0.5dp"
+    android:paddingBottom="0.5dp">
 
     <com.erif.bubble.telegram.BubbleTelegram
         android:id="@+id/item_chat_tele_outgoing_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:messageType="outgoing"
+        app:bubbleType="outgoing"
         app:cornerRadius="20dp"
+        app:elevation="2.5dp"
         android:shadowColor="#72896C"
         android:layout_marginEnd="8dp"
         android:layout_gravity="end">
@@ -21,7 +24,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:includeFontPadding="false"
-            android:maxWidth="280dp"
+            android:maxWidth="300dp"
             android:text="Example"/>
 
     </com.erif.bubble.telegram.BubbleTelegram>

@@ -68,7 +68,7 @@ public class BubbleSms extends FrameLayout {
                     attrs, R.styleable.BubbleSms, defStyleAttr, 0
             );
             try {
-                messageType = a.getInteger(R.styleable.BubbleSms_messageType, INCOMING);
+                messageType = a.getInteger(R.styleable.BubbleSms_bubbleType, INCOMING);
 
                 cornerRadius = a.getDimension(R.styleable.BubbleSms_cornerRadius, 0f);
                 elevation = a.getDimension(R.styleable.BubbleSms_elevation, toDp(1));

@@ -15,7 +15,7 @@ class BubbleCreator {
     private boolean useShadow = false;
     private float strokeWidth = 0f;
 
-    private static final float SMALL_CORNER = 20f;
+    private static final float SMALL_CORNER = 12f;
 
     public void setSize(int width, int height) {
         this.width = width;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="BubbleWhatsapp">
-        <attr name="messageType" format="flags">
+        <attr name="bubbleType" format="flags">
             <flag name="incoming" value="0"/>
             <flag name="outgoing" value="1"/>
         </attr>
@@ -21,17 +21,17 @@
     </declare-styleable>
 
     <declare-styleable name="BubbleTelegram">
-        <attr name="messageType"/>
+        <attr name="bubbleType"/>
         <attr name="cornerRadius"/>
         <attr name="backgroundColor"/>
         <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
-        <attr name="bubbleCondition"/>
+        <attr name="bubbleConditions"/>
     </declare-styleable>
 
     <declare-styleable name="BubbleLine">
-        <attr name="messageType"/>
+        <attr name="bubbleType"/>
         <attr name="cornerRadius"/>
         <attr name="backgroundColor"/>
         <attr name="useCompatPadding"/>
@@ -41,7 +41,7 @@
     </declare-styleable>
 
     <declare-styleable name="BubbleInstagram">
-        <attr name="messageType"/>
+        <attr name="bubbleType"/>
         <attr name="cornerRadius"/>
         <attr name="backgroundColor"/>
         <attr name="useCompatPadding"/>
@@ -58,7 +58,7 @@
     </declare-styleable>
 
     <declare-styleable name="BubbleSms">
-        <attr name="messageType"/>
+        <attr name="bubbleType"/>
         <attr name="cornerRadius"/>
         <attr name="backgroundColor"/>
         <attr name="useCompatPadding"/>

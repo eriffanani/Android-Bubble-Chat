@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.erif.bubble.Bubbles;
 import com.erif.bubble.R;
 import com.erif.bubble.Bubbles.*;
 
@@ -28,12 +29,17 @@ public class BubbleTelegram extends FrameLayout {
     private boolean useCompatPadding = true;
     private float cornerRadius = 0f;
     private float elevation = 0f;
+    private static final float CORNER_SMALL = 18f;
 
     // Message Type
-    public static final int INCOMING = 0;
-    public static final int OUTGOING = 1;
-    private int messageType = INCOMING;
+    public static final int INCOMING = BubbleType.INCOMING.value;
+    public static final int OUTGOING = BubbleType.OUTGOING.value;
+    private int bubbleType = INCOMING;
 
+    private static final int SINGLE = BubbleCondition.SINGLE.value;
+    private static final int OLDEST = BubbleCondition.OLDEST.value;
+    private static final int IN_BETWEEN = BubbleCondition.IN_BETWEEN.value;
+    private static final int LATEST = BubbleCondition.LATEST.value;
     private int bubbleCondition = BubbleCondition.SINGLE.value;
 
     public BubbleTelegram(@NonNull Context context) {
@@ -59,23 +65,24 @@ public class BubbleTelegram extends FrameLayout {
         setWillNotDraw(false);
         Resources.Theme theme = context.getTheme();
         if (theme != null) {
-            TypedArray typedArray = theme.obtainStyledAttributes(
+            TypedArray a = theme.obtainStyledAttributes(
                     attrs, R.styleable.BubbleTelegram, defStyleAttr, 0
             );
             try {
-                messageType = typedArray.getInteger(R.styleable.BubbleTelegram_messageType, INCOMING);
+                bubbleType = a.getInteger(R.styleable.BubbleTelegram_bubbleType, INCOMING);
 
-                cornerRadius = typedArray.getDimension(R.styleable.BubbleTelegram_cornerRadius, 0f);
-                elevation = typedArray.getDimension(R.styleable.BubbleTelegram_elevation, 6f);
+                cornerRadius = a.getDimension(R.styleable.BubbleTelegram_cornerRadius, 0f);
+                elevation = a.getDimension(R.styleable.BubbleTelegram_elevation, 6f);
                 int colorIncoming = Color.WHITE;
                 int colorOutgoing = Color.parseColor("#EFFDDE");
-                int defaultBackgroundColor = messageType == INCOMING ? colorIncoming : colorOutgoing;
-                backgroundColor = typedArray.getColor(R.styleable.BubbleTelegram_backgroundColor, defaultBackgroundColor);
-                useCompatPadding = typedArray.getBoolean(R.styleable.BubbleTelegram_useCompatPadding, true);
+                int defaultBackgroundColor = bubbleType == INCOMING ? colorIncoming : colorOutgoing;
+                backgroundColor = a.getColor(R.styleable.BubbleTelegram_backgroundColor, defaultBackgroundColor);
+                useCompatPadding = a.getBoolean(R.styleable.BubbleTelegram_useCompatPadding, true);
                 int defaultColorShadow = ContextCompat.getColor(context, R.color.bubble_chat_shadow_color);
-                shadowColor = typedArray.getColor(R.styleable.BubbleTelegram_android_shadowColor, defaultColorShadow);
+                shadowColor = a.getColor(R.styleable.BubbleTelegram_android_shadowColor, defaultColorShadow);
+                bubbleCondition = a.getInteger(R.styleable.BubbleTelegram_bubbleConditions, BubbleCondition.SINGLE.value);
             } finally {
-                typedArray.recycle();
+                a.recycle();
             }
         }
 
@@ -100,9 +107,9 @@ public class BubbleTelegram extends FrameLayout {
         int paddingFromCurve = paddingSide + (int) curveWidth;
         if (useCompatPadding)
             setPadding(
-                    messageType == INCOMING ? paddingFromCurve : paddingSide,
+                    bubbleType == INCOMING ? paddingFromCurve : paddingSide,
                     paddingV,
-                    messageType == OUTGOING ? paddingFromCurve : paddingSide,
+                    bubbleType == OUTGOING ? paddingFromCurve : paddingSide,
                     paddingV
             );
 
@@ -112,10 +119,11 @@ public class BubbleTelegram extends FrameLayout {
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         boolean useShadow = elevation >= 1f;
-        if (messageType == OUTGOING) {
+        if (bubbleType == OUTGOING) {
             if (useShadow)
                 canvas.drawPath(pathOutgoing(true), paintShadow);
             canvas.drawPath(pathOutgoing(false), paint);
+
         } else {
             if (useShadow)
                 canvas.drawPath(pathIncoming(true), paintShadow);
@@ -143,14 +151,26 @@ public class BubbleTelegram extends FrameLayout {
         path.lineTo(right, bottom - mCorner); // Bottom Right
         path.quadTo(right, bottom, right - mCorner, bottom); // Corner Bottom Right
 
-        path.lineTo(left + 2f, bottom); // Bottom Left
-        path.quadTo(left, bottom - 2f, left + 2f, bottom - 4f); // Curved Small
+        // Curved
+        if (bubbleCondition == SINGLE || bubbleCondition == LATEST) {
+            path.lineTo(left + 2f, bottom); // Bottom Left
+            path.quadTo(left, bottom - 2f, left + 2f, bottom - 4f); // Curved Small
 
-        float minMCorner = Math.max(35f, mCorner);
-        path.quadTo(leftCard, bottom - 15f, leftCard, bottom - minMCorner); // Curved Top
+            float minMCorner = Math.max(35f, mCorner);
+            path.quadTo(leftCard, bottom - 15f, leftCard, bottom - minMCorner); // Curved Top
+        } else {
+            path.lineTo(leftCard + CORNER_SMALL, bottom);
+            path.quadTo(leftCard, bottom, leftCard, bottom - CORNER_SMALL);
+        }
 
-        path.lineTo(leftCard, top + mCorner); // Top Left
-        path.quadTo(leftCard, top, leftCard + mCorner, top); // Corner Top Left
+        // Top Left
+        if (bubbleCondition == SINGLE || bubbleCondition == OLDEST) {
+            path.lineTo(leftCard, top + mCorner); // Top Left
+            path.quadTo(leftCard, top, leftCard + mCorner, top); // Corner Top Left
+        } else {
+            path.lineTo(leftCard, top + CORNER_SMALL);
+            path.quadTo(leftCard, top, leftCard + CORNER_SMALL, top);
+        }
         return path;
     }
 
@@ -174,16 +194,33 @@ public class BubbleTelegram extends FrameLayout {
         path.lineTo(left, bottom - mCorner); // Bottom Left
         path.quadTo(left, bottom, left + mCorner, bottom); // Corner Bottom Left
 
-        path.lineTo(right - 2f, bottom); // Bottom Right
-        path.quadTo(right, bottom - 2f, right, bottom - 4f); // Curved Small
+        // Bottom Right
+        if (bubbleCondition == SINGLE || bubbleCondition == LATEST) {
+            path.lineTo(right - 2f, bottom); // Bottom Right
+            path.quadTo(right, bottom - 2f, right, bottom - 4f); // Curved Small
 
-        float minMCorner = Math.max(35f, mCorner);
-        path.quadTo(rightCard, bottom - 15f, rightCard, bottom - minMCorner); // Curved Top
+            float minMCorner = Math.max(35f, mCorner);
+            path.quadTo(rightCard, bottom - 15f, rightCard, bottom - minMCorner); // Curved Top
+        } else {
+            path.lineTo(rightCard - CORNER_SMALL, bottom);
+            path.quadTo(rightCard, bottom, rightCard, bottom - CORNER_SMALL);
+        }
 
-        path.lineTo(rightCard, top + mCorner); // Top Right
-        path.quadTo(rightCard, top, rightCard - mCorner, top); // Corner Top Right
+        // Top Right
+        if (bubbleCondition == SINGLE || bubbleCondition == OLDEST) {
+            path.lineTo(rightCard, top + mCorner); // Top Right
+            path.quadTo(rightCard, top, rightCard - mCorner, top); // Corner Top Right
+        } else {
+            path.lineTo(rightCard, top + CORNER_SMALL);
+            path.quadTo(rightCard, top, rightCard - CORNER_SMALL, top);
+        }
 
         return path;
+    }
+
+    public void setBubbleType(Bubbles.BubbleType type) {
+        this.bubbleType = type.value;
+        invalidate();
     }
 
     public void setBubbleCondition(BubbleCondition condition) {

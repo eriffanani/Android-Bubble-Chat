@@ -19,8 +19,6 @@ import com.erif.bubble.Bubbles;
 import com.erif.bubble.R;
 import com.erif.bubble.Bubbles.*;
 
-import dalvik.annotation.optimization.CriticalNative;
-
 public class BubbleLine extends FrameLayout {
 
     private Paint paint;
@@ -34,9 +32,9 @@ public class BubbleLine extends FrameLayout {
     private float elevation = 0f;
 
     // Message Type
-    public static final int INCOMING = 0;
-    public static final int OUTGOING = 1;
-    private int messageType = INCOMING;
+    public static final int INCOMING = BubbleType.INCOMING.value;
+    public static final int OUTGOING = BubbleType.OUTGOING.value;
+    private int bubbleType = INCOMING;
 
     private int bubbleCondition = BubbleCondition.SINGLE.value;
 
@@ -63,23 +61,24 @@ public class BubbleLine extends FrameLayout {
         setWillNotDraw(false);
         Resources.Theme theme = context.getTheme();
         if (theme != null) {
-            TypedArray typedArray = theme.obtainStyledAttributes(
+            TypedArray a = theme.obtainStyledAttributes(
                     attrs, R.styleable.BubbleLine, defStyleAttr, 0
             );
             try {
-                messageType = typedArray.getInteger(R.styleable.BubbleTelegram_messageType, INCOMING);
+                bubbleType = a.getInteger(R.styleable.BubbleTelegram_bubbleType, INCOMING);
 
-                cornerRadius = typedArray.getDimension(R.styleable.BubbleTelegram_cornerRadius, 0f);
-                elevation = typedArray.getDimension(R.styleable.BubbleTelegram_elevation, 6f);
+                cornerRadius = a.getDimension(R.styleable.BubbleTelegram_cornerRadius, 0f);
+                elevation = a.getDimension(R.styleable.BubbleTelegram_elevation, 6f);
                 int colorIncoming = Color.WHITE;
                 int colorOutgoing = Color.parseColor("#ABE871");
-                int defaultBackgroundColor = messageType == INCOMING ? colorIncoming : colorOutgoing;
-                backgroundColor = typedArray.getColor(R.styleable.BubbleTelegram_backgroundColor, defaultBackgroundColor);
-                useCompatPadding = typedArray.getBoolean(R.styleable.BubbleTelegram_useCompatPadding, true);
+                int defaultBackgroundColor = bubbleType == INCOMING ? colorIncoming : colorOutgoing;
+                backgroundColor = a.getColor(R.styleable.BubbleTelegram_backgroundColor, defaultBackgroundColor);
+                useCompatPadding = a.getBoolean(R.styleable.BubbleTelegram_useCompatPadding, true);
                 int defaultColorShadow = ContextCompat.getColor(context, R.color.bubble_chat_shadow_color);
-                shadowColor = typedArray.getColor(R.styleable.BubbleTelegram_android_shadowColor, defaultColorShadow);
+                shadowColor = a.getColor(R.styleable.BubbleTelegram_android_shadowColor, defaultColorShadow);
+                bubbleCondition = a.getInteger(R.styleable.BubbleLine_bubbleCondition, BubbleCondition.SINGLE.value);
             } finally {
-                typedArray.recycle();
+                a.recycle();
             }
         }
 
@@ -104,9 +103,9 @@ public class BubbleLine extends FrameLayout {
         int paddingFromCurve = paddingSide + (int) curveWidth;
         if (useCompatPadding)
             setPadding(
-                    messageType == INCOMING ? paddingFromCurve : paddingSide,
+                    bubbleType == INCOMING ? paddingFromCurve : paddingSide,
                     paddingV,
-                    messageType == OUTGOING ? paddingFromCurve : paddingSide,
+                    bubbleType == OUTGOING ? paddingFromCurve : paddingSide,
                     paddingV
             );
 
@@ -115,18 +114,21 @@ public class BubbleLine extends FrameLayout {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        if (messageType == OUTGOING) {
+        int isSingle = BubbleCondition.SINGLE.value;
+        int isOldest = BubbleCondition.OLDEST.value;
+        boolean isSingleOrOldest = bubbleCondition == isSingle || bubbleCondition == isOldest;
+        if (bubbleType == OUTGOING) {
             if (elevation >= 1f)
-                canvas.drawPath(pathOutgoing(true), paintShadow);
-            canvas.drawPath(pathOutgoing(false), paint);
+                canvas.drawPath(pathOutgoing(true, isSingleOrOldest), paintShadow);
+            canvas.drawPath(pathOutgoing(false, isSingleOrOldest), paint);
         } else {
             if (elevation >= 1f)
-                canvas.drawPath(pathIncoming(true), paintShadow);
-            canvas.drawPath(pathIncoming(false), paint);
+                canvas.drawPath(pathIncoming(true, isSingleOrOldest), paintShadow);
+            canvas.drawPath(pathIncoming(false, isSingleOrOldest), paint);
         }
     }
 
-    private Path pathIncoming(boolean isShadow) {
+    private Path pathIncoming(boolean isShadow, boolean oldest) {
         Path path = new Path();
         int width = getWidth();
         int height = getHeight();
@@ -141,17 +143,22 @@ public class BubbleLine extends FrameLayout {
         float leftCard = isShadow ? curveWidth : curveWidth + (mElevation / 1.6f);
         path.moveTo(right / 2f, top); // Center Top (Starting Point)
 
-        path.lineTo(leftCard + mCorner, top); // Top Left
-        float curveSmallX = (leftCard + mCorner) - (mCorner / 1.35f);
-        float curveSmallY = mCorner / 5f;
-        float distanceCornerToCurveX = leftCard + mCorner - curveSmallX;
-        path.quadTo( // Corner Top Left
-                leftCard + mCorner - (distanceCornerToCurveX / 1.6f), top,
-                curveSmallX, top + curveSmallY
-        );
-        path.quadTo(leftCard, 28f, left + 8f, top + 4f); // Curved Top
-        path.lineTo(left + 4f, top + 4f); // Curved Connection
-        path.quadTo(leftCard / 2f, 38f, leftCard, top + 44f); // Curved Bottom
+        if (oldest) {
+            path.lineTo(leftCard + mCorner, top); // Top Left
+            float curveSmallX = (leftCard + mCorner) - (mCorner / 1.35f);
+            float curveSmallY = mCorner / 5f;
+            float distanceCornerToCurveX = leftCard + mCorner - curveSmallX;
+            path.quadTo( // Corner Top Left
+                    leftCard + mCorner - (distanceCornerToCurveX / 1.6f), top,
+                    curveSmallX, top + curveSmallY
+            );
+            path.quadTo(leftCard, 28f, left + 8f, top + 4f); // Curved Top
+            path.lineTo(left + 4f, top + 4f); // Curved Connection
+            path.quadTo(leftCard / 2f, 38f, leftCard, top + 44f); // Curved Bottom
+        } else {
+            path.lineTo(leftCard + mCorner, top);
+            path.quadTo(leftCard, top, leftCard, top + mCorner);
+        }
 
         path.lineTo(leftCard, bottom - mCorner); // Bottom Left
         path.quadTo(leftCard, bottom, leftCard + mCorner, bottom); // Corner Bottom Left
@@ -165,7 +172,7 @@ public class BubbleLine extends FrameLayout {
         return path;
     }
 
-    private Path pathOutgoing(boolean isShadow) {
+    private Path pathOutgoing(boolean isShadow, boolean oldest) {
         Path path = new Path();
         int width = getWidth();
         int height = getHeight();
@@ -180,17 +187,22 @@ public class BubbleLine extends FrameLayout {
         float rightCard = isShadow ? right - curveWidth : right - curveWidth + (mElevation / 1.6f);
         path.moveTo(right / 2f, top); // Center Top (Starting Point)
 
-        path.lineTo(rightCard - mCorner, top); // Top Right
-        float curveSmallX = (rightCard - mCorner) + (mCorner / 1.35f);
-        float curveSmallY = mCorner / 5f;
-        float distanceCornerToCurveX = mCorner / 1.35f;
-        path.quadTo( // Corner Top Right
-                rightCard - mCorner + (distanceCornerToCurveX / 1.6f), top,
-                curveSmallX, top + curveSmallY
-        );
-        path.quadTo(rightCard, 28f, right - 8f, top + 4f); // Curved Top
-        path.lineTo(right - 4f, top + 4f); // Curved Connection
-        path.quadTo(rightCard + ((right - rightCard) / 2f), 38f, rightCard, top + 44f); // Curved Bottom
+        if (oldest) {
+            path.lineTo(rightCard - mCorner, top); // Top Right
+            float curveSmallX = (rightCard - mCorner) + (mCorner / 1.35f);
+            float curveSmallY = mCorner / 5f;
+            float distanceCornerToCurveX = mCorner / 1.35f;
+            path.quadTo( // Corner Top Right
+                    rightCard - mCorner + (distanceCornerToCurveX / 1.6f), top,
+                    curveSmallX, top + curveSmallY
+            );
+            path.quadTo(rightCard, 28f, right - 8f, top + 4f); // Curved Top
+            path.lineTo(right - 4f, top + 4f); // Curved Connection
+            path.quadTo(rightCard + ((right - rightCard) / 2f), 38f, rightCard, top + 44f); // Curved Bottom
+        } else {
+            path.lineTo(rightCard - mCorner, top);
+            path.quadTo(rightCard, top, rightCard, top + mCorner);
+        }
 
         path.lineTo(rightCard, bottom - mCorner); // Bottom Right
         path.quadTo(rightCard, bottom, rightCard - mCorner, bottom); // Corner Bottom Right
@@ -202,6 +214,11 @@ public class BubbleLine extends FrameLayout {
         path.quadTo(left, top, left + mCorner, top); // Corner Top Left
 
         return path;
+    }
+
+    public void setBubbleType(Bubbles.BubbleType type) {
+        this.bubbleType = type.value;
+        invalidate();
     }
 
     public void setBubbleCondition(BubbleCondition condition) {

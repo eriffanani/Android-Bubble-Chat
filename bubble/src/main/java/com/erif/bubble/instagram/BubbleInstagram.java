@@ -35,9 +35,9 @@ public class BubbleInstagram extends FrameLayout {
     private float strokeWidth = 0f;
     private int strokeColor = 0;
 
-    public static final int INCOMING = 0;
-    public static final int OUTGOING = 1;
-    private int messageType = INCOMING;
+    public static final int INCOMING = BubbleType.INCOMING.value;
+    public static final int OUTGOING = BubbleType.OUTGOING.value;
+    private int bubbleType = INCOMING;
 
     private int bubbleCondition = BubbleCondition.SINGLE.value;
     private final BubbleCreator bubble = new BubbleCreator();
@@ -68,7 +68,7 @@ public class BubbleInstagram extends FrameLayout {
             TypedArray a = theme.obtainStyledAttributes(
                     attrs, R.styleable.BubbleInstagram, defStyleAttr, 0
             );
-            messageType = a.getInteger(R.styleable.BubbleInstagram_messageType, INCOMING);
+            bubbleType = a.getInteger(R.styleable.BubbleInstagram_bubbleType, INCOMING);
 
             float cornerRadius = a.getDimension(R.styleable.BubbleInstagram_cornerRadius, dp(24));
             bubble.setCornerRadius(cornerRadius);
@@ -80,7 +80,7 @@ public class BubbleInstagram extends FrameLayout {
 
             int colorIncoming = Color.WHITE;
             int colorOutgoing = Color.parseColor("#3F63FE");
-            int defaultBackgroundColor = messageType == INCOMING ? colorIncoming : colorOutgoing;
+            int defaultBackgroundColor = bubbleType == INCOMING ? colorIncoming : colorOutgoing;
             backgroundColor = a.getColor(R.styleable.BubbleInstagram_backgroundColor, defaultBackgroundColor);
             useCompatPadding = a.getBoolean(R.styleable.BubbleInstagram_useCompatPadding, true);
             int defaultColorShadow = ContextCompat.getColor(context, R.color.bubble_chat_shadow_color);
@@ -131,7 +131,7 @@ public class BubbleInstagram extends FrameLayout {
         int oldest = BubbleCondition.OLDEST.value;
         int inBetween = BubbleCondition.IN_BETWEEN.value;
         int latest = BubbleCondition.LATEST.value;
-        if (messageType == OUTGOING) {
+        if (bubbleType == OUTGOING) {
             if (bubbleCondition == oldest) {
                 bubble.outgoing(canvas, paintShadow, paintCard, paintStroke).oldest();
             } else if (bubbleCondition == inBetween) {
@@ -152,6 +152,11 @@ public class BubbleInstagram extends FrameLayout {
                 bubble.incoming(canvas, paintShadow, paintCard, paintStroke).single();
             }
         }
+    }
+
+    public void setBubbleType(Bubbles.BubbleType type) {
+        this.bubbleType = type.value;
+        invalidate();
     }
 
     public void setBubbleCondition(Bubbles.BubbleCondition condition) {

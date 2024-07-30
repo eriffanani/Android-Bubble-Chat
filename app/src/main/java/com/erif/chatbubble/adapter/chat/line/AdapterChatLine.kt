@@ -1,8 +1,10 @@
 package com.erif.chatbubble.adapter.chat.line
 
+import android.text.StaticLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.erif.bubble.instagram.BubbleInstagram
@@ -49,6 +51,29 @@ class AdapterChatLine(
         fun bind(item: ItemChat) {
             txt.text = item.message
             bubble.setBubbleCondition(item.condition)
+            item.message?.let {
+                val maxWidthMessage = txt.maxWidth
+                val layoutMessage = StaticLayout.Builder
+                    .obtain(it, 0, it.length, txt.paint, maxWidthMessage)
+                    .setLineSpacing(txt.lineSpacingExtra, txt.lineSpacingMultiplier)
+                    .setMaxLines(txt.maxLines)
+                    .build()
+                val lineCount = layoutMessage.lineCount
+                val param = txt.layoutParams as FrameLayout.LayoutParams
+                if (lineCount > 1) {
+                    var maxLineWidth = 0f
+                    for (i in 0 until lineCount) {
+                        val lineWidth = layoutMessage.getLineWidth(i)
+                        if (lineWidth > maxLineWidth)
+                            maxLineWidth = lineWidth
+                    }
+
+                    param.width = (maxLineWidth + 1f).toInt()
+                } else {
+                    param.width = FrameLayout.LayoutParams.WRAP_CONTENT
+                }
+                txt.layoutParams = param
+            }
         }
 
     }
@@ -63,6 +88,28 @@ class AdapterChatLine(
         fun bind(item: ItemChat) {
             txt.text = item.message
             bubble.setBubbleCondition(item.condition)
+            item.message?.let {
+                val maxWidthMessage = txt.maxWidth
+                val layoutMessage = StaticLayout.Builder
+                    .obtain(it, 0, it.length, txt.paint, maxWidthMessage)
+                    .setLineSpacing(txt.lineSpacingExtra, txt.lineSpacingMultiplier)
+                    .setMaxLines(txt.maxLines)
+                    .build()
+                val lineCount = layoutMessage.lineCount
+                val param = txt.layoutParams as FrameLayout.LayoutParams
+                if (lineCount > 1) {
+                    var maxLineWidth = 0f
+                    for (i in 0 until lineCount) {
+                        val lineWidth = layoutMessage.getLineWidth(i)
+                        if (lineWidth > maxLineWidth)
+                            maxLineWidth = lineWidth
+                    }
+                    param.width = (maxLineWidth).toInt()
+                } else {
+                    param.width = FrameLayout.LayoutParams.WRAP_CONTENT
+                }
+                txt.layoutParams = param
+            }
         }
 
     }
