@@ -1,4 +1,4 @@
-package com.erif.chatbubble.adapter.chat.telegram
+package com.erif.chatbubble.adapter.chat.telegram.android
 
 import android.text.StaticLayout
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.erif.bubble.telegram.BubbleTelegram
-import com.erif.bubble.whatsapp.BubbleWhatsapp
 import com.erif.chatbubble.R
 import com.erif.chatbubble.adapter.chat.ItemChat
 

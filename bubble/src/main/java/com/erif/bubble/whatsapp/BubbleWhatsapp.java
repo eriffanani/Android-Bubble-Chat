@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -74,7 +75,7 @@ public class BubbleWhatsapp extends FrameLayout {
                 float cornerRadius = a.getDimension(R.styleable.BubbleWhatsapp_cornerRadius, 0f);
                 bubble.cornerRadius(cornerRadius);
 
-                elevation = a.getDimension(R.styleable.BubbleWhatsapp_elevation, 6f);
+                elevation = a.getDimension(R.styleable.BubbleWhatsapp_elevation, dp(2));
                 bubble.elevation(elevation);
 
                 int colorIncoming = Color.WHITE;
@@ -166,13 +167,22 @@ public class BubbleWhatsapp extends FrameLayout {
     public float curvedWidth() { return curveWidth; }
 
     public void setBubbleType(Bubbles.BubbleType type) {
-        this.bubbleType = type.value;
-        invalidate();
+        if (bubbleType != type.value) {
+            this.bubbleType = type.value;
+            invalidate();
+        }
     }
 
     public void setBubbleCondition(Bubbles.BubbleCondition condition) {
-        this.bubbleCondition = condition.value;
-        invalidate();
+        if (bubbleCondition != condition.value) {
+            this.bubbleCondition = condition.value;
+            invalidate();
+        }
+    }
+
+    private float dp(int dp) {
+        int density = getContext().getResources().getDisplayMetrics().densityDpi;
+        return dp * ((float) density / DisplayMetrics.DENSITY_DEFAULT);
     }
 
 }

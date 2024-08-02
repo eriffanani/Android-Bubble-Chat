@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -65,17 +66,17 @@ public class BubbleLine extends FrameLayout {
                     attrs, R.styleable.BubbleLine, defStyleAttr, 0
             );
             try {
-                bubbleType = a.getInteger(R.styleable.BubbleTelegram_bubbleType, INCOMING);
+                bubbleType = a.getInteger(R.styleable.BubbleLine_bubbleType, INCOMING);
 
-                cornerRadius = a.getDimension(R.styleable.BubbleTelegram_cornerRadius, 0f);
-                elevation = a.getDimension(R.styleable.BubbleTelegram_elevation, 6f);
+                cornerRadius = a.getDimension(R.styleable.BubbleLine_cornerRadius, 0f);
+                elevation = a.getDimension(R.styleable.BubbleLine_elevation, dp(2));
                 int colorIncoming = Color.WHITE;
                 int colorOutgoing = Color.parseColor("#ABE871");
                 int defaultBackgroundColor = bubbleType == INCOMING ? colorIncoming : colorOutgoing;
-                backgroundColor = a.getColor(R.styleable.BubbleTelegram_backgroundColor, defaultBackgroundColor);
-                useCompatPadding = a.getBoolean(R.styleable.BubbleTelegram_useCompatPadding, true);
+                backgroundColor = a.getColor(R.styleable.BubbleLine_backgroundColor, defaultBackgroundColor);
+                useCompatPadding = a.getBoolean(R.styleable.BubbleLine_useCompatPadding, true);
                 int defaultColorShadow = ContextCompat.getColor(context, R.color.bubble_chat_shadow_color);
-                shadowColor = a.getColor(R.styleable.BubbleTelegram_android_shadowColor, defaultColorShadow);
+                shadowColor = a.getColor(R.styleable.BubbleLine_android_shadowColor, defaultColorShadow);
                 bubbleCondition = a.getInteger(R.styleable.BubbleLine_bubbleCondition, BubbleCondition.SINGLE.value);
             } finally {
                 a.recycle();
@@ -217,13 +218,22 @@ public class BubbleLine extends FrameLayout {
     }
 
     public void setBubbleType(Bubbles.BubbleType type) {
-        this.bubbleType = type.value;
-        invalidate();
+        if (bubbleType != type.value) {
+            this.bubbleType = type.value;
+            invalidate();
+        }
     }
 
     public void setBubbleCondition(BubbleCondition condition) {
-        this.bubbleCondition = condition.value;
-        invalidate();
+        if (bubbleCondition != condition.value) {
+            this.bubbleCondition = condition.value;
+            invalidate();
+        }
+    }
+
+    private float dp(int dp) {
+        int density = getContext().getResources().getDisplayMetrics().densityDpi;
+        return dp * ((float) density / DisplayMetrics.DENSITY_DEFAULT);
     }
 
 }

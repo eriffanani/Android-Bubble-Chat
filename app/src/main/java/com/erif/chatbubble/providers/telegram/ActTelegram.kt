@@ -1,4 +1,4 @@
-package com.erif.chatbubble.providers
+package com.erif.chatbubble.providers.telegram
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.erif.chatbubble.R
 import com.erif.chatbubble.adapter.chat.ChatItemDecoration
 import com.erif.chatbubble.adapter.chat.Chats
-import com.erif.chatbubble.adapter.chat.telegram.AdapterChatTelegram
+import com.erif.chatbubble.adapter.chat.telegram.android.AdapterChatTelegram
 
 class ActTelegram : AppCompatActivity() {
 

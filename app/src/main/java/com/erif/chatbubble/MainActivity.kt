@@ -13,9 +13,10 @@ import com.erif.chatbubble.adapter.menu.ItemMenu
 import com.erif.chatbubble.providers.ActInstagram
 import com.erif.chatbubble.providers.ActLine
 import com.erif.chatbubble.providers.ActSms
-import com.erif.chatbubble.providers.ActTelegram
-import com.erif.chatbubble.providers.ActWhatsapp
-import com.erif.chatbubble.providers.ActWhatsappIos
+import com.erif.chatbubble.providers.telegram.ActTelegram
+import com.erif.chatbubble.providers.telegram.ActTelegramIos
+import com.erif.chatbubble.providers.whatsapp.ActWhatsapp
+import com.erif.chatbubble.providers.whatsapp.ActWhatsappIos
 
 class MainActivity : AppCompatActivity(), AdapterMenu.OnClickListener {
 
@@ -32,15 +33,24 @@ class MainActivity : AppCompatActivity(), AdapterMenu.OnClickListener {
         }
         val arrIcon = arrayOf(
             R.drawable.ic_wa, R.drawable.ic_wa,
-            R.drawable.ic_tele, R.drawable.ic_line,
-            R.drawable.ic_ig, R.drawable.ic_sms
+            R.drawable.ic_tele, R.drawable.ic_tele,
+            R.drawable.ic_line, R.drawable.ic_ig,
+            R.drawable.ic_sms
         )
         val arrName = arrayOf(
-            "WhatsApp", "WhatsApp (IOS)", "Telegram", "Line", "Instagram", "SMS"
+            "WhatsApp", "WhatsApp (IOS)",
+            "Telegram", "Telegram (IOS)",
+            "Line", "Instagram", "SMS"
+        )
+        val arrDest = arrayOf(
+            ActWhatsapp::class.java, ActWhatsappIos::class.java,
+            ActTelegram::class.java, ActTelegramIos::class.java,
+            ActLine::class.java, ActInstagram::class.java,
+            ActSms::class.java
         )
         val list: MutableList<ItemMenu> = ArrayList()
         arrIcon.forEachIndexed { i, icon ->
-            list.add(ItemMenu(i, icon, arrName[i]))
+            list.add(ItemMenu(i, icon, arrName[i], arrDest[i]))
         }
         adapter = AdapterMenu(list, this)
         val recyclerView: RecyclerView = findViewById(R.id.actMainRecyclerView)
@@ -49,20 +59,7 @@ class MainActivity : AppCompatActivity(), AdapterMenu.OnClickListener {
     }
 
     override fun onClickItem(item: ItemMenu) {
-        val destination = if (item.name.contains("tele", true)) {
-            ActTelegram::class.java
-        } else if (item.name.contains("line", true)){
-            ActLine::class.java
-        } else if (item.name.contains("insta", true)){
-            ActInstagram::class.java
-        } else if (item.name.contains("sms", true)){
-            ActSms::class.java
-        } else if (item.name.contains("IOS", true)){
-            ActWhatsappIos::class.java
-        } else {
-            ActWhatsapp::class.java
-        }
-        val intent = Intent(this, destination)
+        val intent = Intent(this, item.destination)
         startActivity(intent)
     }
 }

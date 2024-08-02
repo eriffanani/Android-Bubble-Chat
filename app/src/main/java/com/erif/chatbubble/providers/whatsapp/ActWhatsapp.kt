@@ -1,4 +1,4 @@
-package com.erif.chatbubble.providers
+package com.erif.chatbubble.providers.whatsapp
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

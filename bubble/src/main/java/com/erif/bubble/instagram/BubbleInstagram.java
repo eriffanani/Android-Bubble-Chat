@@ -155,13 +155,17 @@ public class BubbleInstagram extends FrameLayout {
     }
 
     public void setBubbleType(Bubbles.BubbleType type) {
-        this.bubbleType = type.value;
-        invalidate();
+        if (bubbleType != type.value) {
+            this.bubbleType = type.value;
+            invalidate();
+        }
     }
 
     public void setBubbleCondition(Bubbles.BubbleCondition condition) {
-        this.bubbleCondition = condition.value;
-        invalidate();
+        if (bubbleCondition != condition.value) {
+            this.bubbleCondition = condition.value;
+            invalidate();
+        }
     }
 
     private float dp(int dp) {

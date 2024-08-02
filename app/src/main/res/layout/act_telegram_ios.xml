@@ -6,14 +6,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFE9E0"
-    tools:context=".providers.whatsapp.ActWhatsappIos">
+    android:background="#92BB86"
+    tools:context=".providers.telegram.ActTelegramIos">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/act_wa_ios_recycler"
+        android:id="@+id/act_tele_ios_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         tools:itemCount="10"
-        tools:listitem="@layout/item_chat_wa_ios_incoming"/>
+        tools:listitem="@layout/item_chat_tele_ios_incoming"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

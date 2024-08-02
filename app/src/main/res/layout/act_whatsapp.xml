@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFE9E0"
-    tools:context=".providers.ActWhatsapp">
+    tools:context=".providers.whatsapp.ActWhatsapp">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/act_wa_recycler"

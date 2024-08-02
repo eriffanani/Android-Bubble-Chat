@@ -28,6 +28,7 @@
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
         <attr name="bubbleConditions"/>
+        <attr name="backgroundStyle"/>
     </declare-styleable>
 
     <declare-styleable name="BubbleLine">
