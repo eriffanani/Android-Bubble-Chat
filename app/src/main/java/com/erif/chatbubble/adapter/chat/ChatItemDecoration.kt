@@ -20,6 +20,10 @@ class ChatItemDecoration(
                 with(outRect) {
                     top = 40
                 }
+            else
+                with(outRect) {
+                    top = -6
+                }
         }
     }
 

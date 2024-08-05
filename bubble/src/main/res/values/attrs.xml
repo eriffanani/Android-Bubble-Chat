@@ -15,9 +15,12 @@
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
         <attr name="bubbleCondition" format="flags">
-            <flag name="latest" value="0" />
+            <flag name="latest" value="3" />
             <flag name="oldest" value="1" />
         </attr>
+        <attr name="strokeColor"/>
+        <attr name="strokeWidth"/>
+        <attr name="pressedColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="BubbleTelegram">

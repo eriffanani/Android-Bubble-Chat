@@ -91,6 +91,9 @@ class AdapterChatWhatsapp(
         fun bind(item: ItemChat) {
             txt.text = item.message
             bubble.setBubbleCondition(item.condition)
+            bubble.setOnClickListener {
+
+            }
             item.message?.let {
                 val maxWidthMessage = txt.maxWidth
                 val layoutMessage = StaticLayout.Builder

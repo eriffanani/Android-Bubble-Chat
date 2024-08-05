@@ -5,18 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="0.5dp"
-    android:paddingBottom="0.5dp"
-    android:clipToPadding="false">
+    android:paddingBottom="2dp"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <com.erif.bubble.whatsapp.BubbleWhatsapp
         android:id="@+id/item_chat_wa_android_incoming_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cornerRadius="15dp"
-        app:elevation="2dp"
-        app:bubbleCondition="oldest"
+        app:elevation="2.5dp"
         android:layout_marginStart="8dp"
-        android:shadowColor="#D8D4CC">
+        android:shadowColor="#CCC9C2">
 
         <TextView
             android:id="@+id/item_chat_wa_android_incoming_txt"

@@ -9,7 +9,7 @@ class BubbleCreator {
 
     private int width = 0;
     private int height = 0;
-    private float borderSize = 0f;
+    private float shadowSize = 0f;
     private float cornerRadius = 0f;
     private float elevation = 0f;
     private boolean useShadow = false;
@@ -22,8 +22,8 @@ class BubbleCreator {
         this.height = height;
     }
 
-    public void setBorderSize(float borderSize) {
-        this.borderSize = borderSize;
+    public void setShadowSize(float shadowSize) {
+        this.shadowSize = shadowSize;
     }
 
     public void setCornerRadius(float cornerRadius) {
@@ -63,17 +63,17 @@ class BubbleCreator {
                 Path pathShadow = new Path();
                 RectF rectFShadow = new RectF();
                 float leftShadow = elevation * 1.5f;
-                float topShadow = 0f + (elevation + borderSize) * 2;
+                float topShadow = 0f + (elevation + shadowSize) * 2;
                 float rightShadow = width - (elevation * 2f);
                 float bottomShadow = height - (elevation * 2f);
                 rectFShadow.set(leftShadow, topShadow, rightShadow, bottomShadow);
                 pathShadow.addRoundRect(rectFShadow, corners, Path.Direction.CW);
                 canvas.drawPath(pathShadow, paintShadow);
             }
-            float left = 0f + (elevation * 1.2f) - borderSize;
-            float top = 0f + elevation + borderSize;
-            float right = width - (elevation * 1.3f) - borderSize;
-            float bottom = height - (elevation * 2f) - borderSize;
+            float left = 0f + (elevation * 1.2f) - shadowSize;
+            float top = 0f + elevation + shadowSize;
+            float right = width - (elevation * 1.3f) - shadowSize;
+            float bottom = height - (elevation * 2f) - shadowSize;
             if (strokeWidth > 0f) {
                 Path pathStroke = new Path();
                 RectF rectFStroke = new RectF();
@@ -105,7 +105,7 @@ class BubbleCreator {
     class Incoming {
 
         private final Drawing drawing;
-        private final float mCorner = Math.min(cornerRadius, (height - (elevation * 2f) - borderSize) / 2f);
+        private final float mCorner = Math.min(cornerRadius, (height - (elevation * 2f) - shadowSize) / 2f);
 
         public Incoming(Canvas canvas, Paint paintShadow, Paint paintCard, Paint paintStroke) {
             drawing = new Drawing(canvas, paintShadow, paintCard, paintStroke);
@@ -160,7 +160,7 @@ class BubbleCreator {
     class Outgoing {
 
         private final Drawing drawing;
-        private final float mCorner = Math.min(cornerRadius, (height - (elevation * 2f) - borderSize) / 2f);
+        private final float mCorner = Math.min(cornerRadius, (height - (elevation * 2f) - shadowSize) / 2f);
 
         public Outgoing(Canvas canvas, Paint paintShadow, Paint paintCard, Paint paintStroke) {
             drawing = new Drawing(canvas, paintShadow, paintCard, paintStroke);

@@ -9,6 +9,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,14 +22,16 @@ import com.erif.bubble.R;
 
 public class BubbleWhatsapp extends FrameLayout {
 
-    private Paint paint;
-    private Paint paintShadow;
+    private Paint paintCard;
 
+    private int pressedColor = 0;
     private int backgroundColor;
     private int shadowColor;
     private float curveWidth = 34f;
     private boolean useCompatPadding = true;
     private float elevation = 0f;
+    private float borderWidth = 0f;
+    private int borderColor = Color.BLACK;
 
     // Message Type
     private static final int INCOMING = Bubbles.BubbleType.INCOMING.value;
@@ -82,12 +87,25 @@ public class BubbleWhatsapp extends FrameLayout {
                 int colorOutgoing = Color.parseColor("#E1FFD4");
                 int defaultBackgroundColor = bubbleType == INCOMING ? colorIncoming : colorOutgoing;
                 backgroundColor = a.getColor(R.styleable.BubbleWhatsapp_backgroundColor, defaultBackgroundColor);
+
+                // Pressed Color
+                int colorPressIncoming = Color.parseColor("#EEEEEE");
+                int colorPressOutgoing = Color.parseColor("#CFEAC4");
+                int defaultPressedColor = bubbleType == INCOMING ? colorPressIncoming : colorPressOutgoing;
+                pressedColor = a.getColor(R.styleable.BubbleWhatsapp_pressedColor, defaultPressedColor);
+
                 useCompatPadding = a.getBoolean(R.styleable.BubbleWhatsapp_useCompatPadding, true);
                 backgroundStyle = a.getInteger(R.styleable.BubbleWhatsapp_backgroundStyle, ANDROID);
                 int defaultColorShadow = ContextCompat.getColor(context, R.color.bubble_chat_shadow_color);
                 shadowColor = a.getColor(R.styleable.BubbleWhatsapp_android_shadowColor, defaultColorShadow);
                 int defaultCondition = Bubbles.BubbleCondition.SINGLE.value;
                 bubbleCondition = a.getInteger(R.styleable.BubbleWhatsapp_bubbleCondition, defaultCondition);
+
+                // Border
+                float getBorderWidth = a.getDimension(R.styleable.BubbleWhatsapp_strokeWidth, 0f);
+                borderWidth = Math.min(getBorderWidth, 14f);
+                bubble.setBorderWidth(borderWidth);
+                borderColor = a.getColor(R.styleable.BubbleWhatsapp_strokeColor, Color.BLACK);
 
                 curveWidth = backgroundStyle == IOS ? 28f : 34f;
                 bubble.curveWidth(curveWidth);
@@ -96,19 +114,34 @@ public class BubbleWhatsapp extends FrameLayout {
             }
         }
 
-        // Paint Card
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(backgroundColor);
-        paint.setMaskFilter(null);
-        // Paint Shadow
-        paintShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintShadow.setStyle(Paint.Style.FILL);
-        paintShadow.setColor(shadowColor);
-        paintShadow.setMaskFilter(new BlurMaskFilter(
-                Math.min(Math.max(1f, elevation), 20f), BlurMaskFilter.Blur.NORMAL
-        ));
-        setLayerType(LAYER_TYPE_SOFTWARE, paintShadow);
+
+        if (backgroundColor != 0) {
+            // Paint Card
+            paintCard = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paintCard.setStyle(Paint.Style.FILL);
+            paintCard.setColor(backgroundColor);
+            //paintCard.setMaskFilter(null);
+            bubble.setPaintCard(paintCard);
+
+            // Paint Shadow
+            Paint paintShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paintShadow.setStyle(Paint.Style.FILL);
+            paintShadow.setColor(shadowColor);
+            paintShadow.setMaskFilter(new BlurMaskFilter(
+                    Math.min(Math.max(1f, elevation), 30f), BlurMaskFilter.Blur.NORMAL
+            ));
+            bubble.setPaintShadow(paintShadow);
+        }
+
+        if (borderWidth >= 1f) {
+            // Paint Border
+            Paint paintBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paintBorder.setStyle(Paint.Style.STROKE);
+            paintBorder.setColor(borderColor);
+            paintBorder.setStrokeWidth(borderWidth);
+            bubble.setPaintBorder(paintBorder);
+            setLayerType(LAYER_TYPE_SOFTWARE, paintBorder);
+        }
 
         setClipToPadding(false);
         int paddingSide = 40;
@@ -122,6 +155,16 @@ public class BubbleWhatsapp extends FrameLayout {
                     paddingV
             );
 
+        setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                paintCard.setColor(pressedColor);
+            } else if (event.getAction() == MotionEvent.ACTION_UP){
+                paintCard.setColor(backgroundColor);
+            }
+            invalidate();
+            return true;
+        });
+
     }
 
     @Override
@@ -129,36 +172,34 @@ public class BubbleWhatsapp extends FrameLayout {
         super.onDraw(canvas);
         bubble.size(getWidth(), getHeight());
         int single = Bubbles.BubbleCondition.SINGLE.value;
-        int latest = Bubbles.BubbleCondition.LATEST.value;
         int oldest = Bubbles.BubbleCondition.OLDEST.value;
+        boolean isSingleOrOldest = bubbleCondition == single || bubbleCondition == oldest;
         if (backgroundStyle == IOS) { // IOS
-            boolean isSingleOrLatest = bubbleCondition == single || bubbleCondition == latest;
             if (bubbleType == OUTGOING) { // Outgoing
-                if (isSingleOrLatest) { // Latest
-                    bubble.iOS().outgoing().latest(canvas, paintShadow, paint);
-                } else { // Oldest
-                    bubble.iOS().outgoing().oldest(canvas, paintShadow, paint);
+                if (isSingleOrOldest) { // Oldest
+                    bubble.iOS().outgoing().oldest(canvas);
+                } else { // Latest
+                    bubble.iOS().outgoing().latest(canvas);
                 }
             } else { // Incoming
-                if (isSingleOrLatest) { // Latest
-                    bubble.iOS().incoming().latest(canvas, paintShadow, paint);
-                } else { // Oldest
-                    bubble.iOS().incoming().oldest(canvas, paintShadow, paint);
+                if (isSingleOrOldest) { // Oldest
+                    bubble.iOS().incoming().oldest(canvas);
+                } else { // Latest
+                    bubble.iOS().incoming().latest(canvas);
                 }
             }
         } else { // Android
-            boolean isSingleOrOldest = bubbleCondition == single || bubbleCondition == oldest;
             if (bubbleType == OUTGOING) { // Outgoing
-                if (isSingleOrOldest) { // Latest
-                    bubble.android().outgoing().latest(canvas, paintShadow, paint);
-                } else { // Oldest
-                    bubble.android().outgoing().oldest(canvas, paintShadow, paint);
+                if (isSingleOrOldest) { // Oldest
+                    bubble.android().outgoing().oldest(canvas);
+                } else { // Latest
+                    bubble.android().outgoing().latest(canvas);
                 }
             } else { // Incoming
-                if (isSingleOrOldest) { // Latest
-                    bubble.android().incoming().latest(canvas, paintShadow, paint);
-                } else { // Oldest
-                    bubble.android().incoming().oldest(canvas, paintShadow, paint);
+                if (isSingleOrOldest) { // Oldest
+                    bubble.android().incoming().oldest(canvas);
+                } else { // Latest
+                    bubble.android().incoming().latest(canvas);
                 }
             }
         }

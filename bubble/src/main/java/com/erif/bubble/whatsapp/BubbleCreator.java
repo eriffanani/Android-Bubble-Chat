@@ -8,8 +8,10 @@ class BubbleCreator {
 
     private int width = 0;
     private int height = 0;
+    private Paint paintCard, paintShadow, paintBorder;
     private float elevation = 0f;
     private float cornerRadius = 0f;
+    private float borderWidth = 0f;
     private float curveWidth = 0f;
 
     public void size(int width, int height) {
@@ -29,11 +31,30 @@ class BubbleCreator {
         this.curveWidth = curveWidth;
     }
 
+    public void setBorderWidth(float borderWidth) {
+        this.borderWidth = borderWidth;
+    }
+
+    public void setPaintCard(Paint paintCard) {
+        this.paintCard = paintCard;
+    }
+
+    public void setPaintBorder(Paint paintBorder) {
+        this.paintBorder = paintBorder;
+    }
+
+    public void setPaintShadow(Paint paintShadow) {
+        this.paintShadow = paintShadow;
+    }
+
     public Android android() { return new Android(); }
     public IOS iOS() { return new IOS(); }
 
     public class Android {
         private final float mElevation = Math.min(elevation, height / 4f);
+        private final boolean useShadow = elevation >= 1f;
+        private final boolean useBorder = borderWidth >= 1f;
+        private final float borderHalf = borderWidth / 2f;
 
         public Incoming incoming(){ return new Incoming(); }
 
@@ -42,22 +63,37 @@ class BubbleCreator {
             private float left = 0f;
             private float leftCard = 0f;
             private float top = 0;
+            private float right = 0f;
             private float curvedHeight = 0f;
             private float curveBottom = 0f;
             private float mCorner = 0f;
 
-            private Path getPath(boolean isShadow) {
+            private Path getPath(boolean isShadow, boolean isBorder) {
                 Path path = new Path();
-                top = isShadow ? 0f : (mElevation / 3f);
-                float bottom = isShadow ? height : height - (mElevation / 1.4f);
+
+                float topFill = (mElevation / 3f);
+                float topShadow = mElevation / 2f;
+                top = isShadow ? topShadow : isBorder ? topFill + borderHalf : topFill;
+                float bottomFill = height - (mElevation / 1.4f);
+
+                float bottom = isShadow ? height - (elevation / 2f) : isBorder ? bottomFill - borderHalf : bottomFill - borderWidth;
                 float maxCorner = Math.min(cornerRadius, (height / 1.86f));
-                mCorner = isShadow ? (maxCorner + 10f) : maxCorner;
+                mCorner = isShadow ? (maxCorner + 2f) : isBorder ? maxCorner - (borderHalf) : maxCorner;
+                //mCorner = isShadow ? (maxCorner + 10f) : maxCorner;
                 curveBottom = isShadow ? top + 35f : top + 32f;
                 curvedHeight = top + 8f;
 
-                left = isShadow ? 0f : (mElevation / 1.5f);
-                leftCard = isShadow ? curveWidth : curveWidth + (mElevation / 1.6f);
-                float right = isShadow ? width : width - (mElevation / 1.6f);
+                float leftFill = (mElevation / 1.5f);
+                left = isShadow ? 0f : isBorder ? leftFill + borderHalf : leftFill;
+
+                float leftCardFill = curveWidth + (mElevation / 1.6f);
+                float leftCardShadow = curveWidth + (mElevation / 2f);
+                leftCard = isShadow ? leftCardShadow : isBorder ? leftCardFill + borderHalf : leftCardFill;
+
+                float rightFill = width - (mElevation / 1.6f);
+                float rightShadow = width - (mElevation / 2f);
+                right = isShadow ? rightShadow : isBorder ? rightFill - borderHalf : rightFill;
+
                 path.moveTo(right / 2f, top); // Center Top (Starting Point)
 
                 path.lineTo(right - mCorner, top); // Top Right
@@ -72,39 +108,56 @@ class BubbleCreator {
                 return path;
             }
 
-            private void draw(
-                    Canvas canvas, Path pathShadow, Paint paintShadow,
-                    Path path, Paint paint
-            ) {
-                boolean isShadow = elevation >= 1f;
-                if (isShadow)
+            public void latest(Canvas canvas) {
+                if (useShadow && paintShadow != null) {
+                    Path pathShadow = getPath(true, false);
+                    pathShadow.lineTo(leftCard, top + mCorner); // Top Left
+                    pathShadow.quadTo(leftCard, top, leftCard + mCorner, top); // Corner Top Left
                     canvas.drawPath(pathShadow, paintShadow);
-                canvas.drawPath(path, paint);
+                }
+                if (paintCard != null) {
+                    Path pathCard = getPath(false, false);
+                    pathCard.lineTo(leftCard + borderHalf, top + mCorner + borderHalf); // Top Left
+                    pathCard.quadTo(leftCard + borderHalf, top + borderHalf, leftCard + mCorner + borderHalf, top + borderHalf); // Corner Top Left
+                    pathCard.lineTo(right / 2f, top + borderHalf);
+                    canvas.drawPath(pathCard, paintCard);
+                }
+                if (useBorder) { // Border
+                    Path pathBorder = getPath(false, true);
+                    pathBorder.lineTo(leftCard, top + mCorner); // Top Left
+                    pathBorder.quadTo(leftCard, top, leftCard + mCorner, top); // Corner Top Left
+                    pathBorder.lineTo(right / 2f, top);
+                    canvas.drawPath(pathBorder, paintBorder);
+                }
             }
 
-            public void latest(Canvas canvas, Paint paintShadow, Paint paint) {
-                Path pathShadow = getPath(true);
-                pathShadow.lineTo(leftCard, curveBottom); // Curve Bottom Right
-                pathShadow.lineTo(left + 5f, curvedHeight); // Curve Bottom Left
-                pathShadow.quadTo(left, top, left + 15f, top); // Curve Corner
-
-                Path path = getPath(false);
-                path.lineTo(leftCard, curveBottom); // Curve Bottom Right
-                path.lineTo(left + 5f, curvedHeight); // Curve Bottom Left
-                path.quadTo(left, top, left + 15f, top); // Curve Corner
-
-                draw(canvas, pathShadow, paintShadow, path, paint);
-            }
-
-            public void oldest(Canvas canvas, Paint paintShadow, Paint paint) {
-                Path pathShadow = getPath(false);
-                pathShadow.lineTo(leftCard, top + mCorner);
-                pathShadow.quadTo(leftCard, top, leftCard + mCorner, top);
-
-                Path path = getPath(false);
-                path.lineTo(leftCard, top + mCorner);
-                path.quadTo(leftCard, top, leftCard + mCorner, top);
-                draw(canvas, pathShadow, paintShadow, path, paint);
+            public void oldest(Canvas canvas) {
+                if (useShadow && paintShadow != null) { // Shadow
+                    Path pathShadow = getPath(true, false);
+                    pathShadow.lineTo(leftCard, curveBottom); // Curve Bottom Right
+                    pathShadow.lineTo(left + 5f, curvedHeight); // Curve Bottom Left
+                    pathShadow.quadTo(left, top, left + 15f, top); // Curve Corner
+                    canvas.drawPath(pathShadow, paintShadow);
+                }
+                // Card
+                if (paintCard != null) {
+                    Path pathCard = getPath(false, false);
+                    pathCard.lineTo(leftCard + borderHalf, curveBottom + 4f + borderHalf); // Curve Bottom Right
+                    pathCard.quadTo(leftCard, curveBottom, leftCard - 4f, curveBottom - 4f);
+                    pathCard.lineTo(left + 5f + borderHalf, curvedHeight + borderHalf); // Curve Bottom Left
+                    pathCard.quadTo(left + borderHalf, top + borderHalf, left + 15f + borderHalf, top + borderHalf); // Curve Corner
+                    pathCard.lineTo(right / 2f, top);
+                    canvas.drawPath(pathCard, paintCard);
+                }
+                if (useBorder) { // Border
+                    Path pathBorder = getPath(false, true);
+                    pathBorder.lineTo(leftCard, curveBottom + 4f); // Curve Bottom Right
+                    pathBorder.quadTo(leftCard, curveBottom, leftCard - 4f, curveBottom - 4f);
+                    pathBorder.lineTo(left + 5f, curvedHeight); // Curve Bottom Left
+                    pathBorder.quadTo(left, top, left + 15f, top); // Curve Corner
+                    pathBorder.lineTo(right / 2f, top);
+                    canvas.drawPath(pathBorder, paintBorder);
+                }
             }
 
         }
@@ -147,16 +200,15 @@ class BubbleCreator {
             }
 
             private void draw(
-                    Canvas canvas, Path pathShadow, Paint paintShadow,
-                    Path path, Paint paint
+                    Canvas canvas, Path pathShadow, Path path
             ) {
                 boolean isShadow = elevation >= 1f;
                 if (isShadow)
                     canvas.drawPath(pathShadow, paintShadow);
-                canvas.drawPath(path, paint);
+                canvas.drawPath(path, paintCard);
             }
 
-            public void latest(Canvas canvas, Paint paintShadow, Paint paint) {
+            public void latest(Canvas canvas) {
                 Path pathShadow = getPath(true);
                 pathShadow.lineTo(rightCard, curveBottom);
                 pathShadow.lineTo(right - 5f, curvedHeight);
@@ -167,10 +219,10 @@ class BubbleCreator {
                 path.lineTo(right - 5f, curvedHeight);
                 path.quadTo(right, top, right - 15f, top);
 
-                draw(canvas, pathShadow, paintShadow, path, paint);
+                draw(canvas, pathShadow, path);
             }
 
-            public void oldest(Canvas canvas, Paint paintShadow, Paint paint) {
+            public void oldest(Canvas canvas) {
                 Path pathShadow = getPath(true);
                 pathShadow.lineTo(rightCard, top + mCorner);
                 pathShadow.quadTo(rightCard, top, rightCard - mCorner, top);
@@ -178,7 +230,7 @@ class BubbleCreator {
                 Path path = getPath(false);
                 path.lineTo(rightCard, top + mCorner);
                 path.quadTo(rightCard, top, rightCard - mCorner, top);
-                draw(canvas, pathShadow, paintShadow, path, paint);
+                draw(canvas, pathShadow, path);
             }
 
         }
@@ -192,25 +244,24 @@ class BubbleCreator {
         public class Incoming {
 
             private void draw(
-                    Canvas canvas, Path pathShadow, Paint paintShadow,
-                    Path path, Paint paint
+                    Canvas canvas, Path pathShadow, Path path
             ) {
                 boolean isShadow = elevation >= 1f;
                 if (isShadow)
                     canvas.drawPath(pathShadow, paintShadow);
-                canvas.drawPath(path, paint);
+                canvas.drawPath(path, paintCard);
             }
 
-            public void latest(Canvas canvas, Paint paintShadow, Paint paint) {
+            public void latest(Canvas canvas) {
                 Path pathShadow = getPath(true, true);
                 Path path = getPath(false, true);
-                draw(canvas, pathShadow, paintShadow, path, paint);
+                draw(canvas, pathShadow, path);
             }
 
-            public void oldest(Canvas canvas, Paint paintShadow, Paint paint) {
+            public void oldest(Canvas canvas) {
                 Path pathShadow = getPath(true, false);
                 Path path = getPath(false, false);
-                draw(canvas, pathShadow, paintShadow, path, paint);
+                draw(canvas, pathShadow, path);
             }
 
             private Path getPath(boolean isShadow, boolean latest) {
@@ -259,25 +310,24 @@ class BubbleCreator {
         public class Outgoing {
 
             private void draw(
-                    Canvas canvas, Path pathShadow, Paint paintShadow,
-                    Path path, Paint paint
+                    Canvas canvas, Path pathShadow, Path path
             ) {
                 boolean isShadow = elevation >= 1f;
                 if (isShadow)
                     canvas.drawPath(pathShadow, paintShadow);
-                canvas.drawPath(path, paint);
+                canvas.drawPath(path, paintCard);
             }
 
-            public void latest(Canvas canvas, Paint paintShadow, Paint paint) {
+            public void latest(Canvas canvas) {
                 Path pathShadow = getPath(true, true);
                 Path path = getPath(false, true);
-                draw(canvas, pathShadow, paintShadow, path, paint);
+                draw(canvas, pathShadow, path);
             }
 
-            public void oldest(Canvas canvas, Paint paintShadow, Paint paint) {
+            public void oldest(Canvas canvas) {
                 Path pathShadow = getPath(true, false);
                 Path path = getPath(false, false);
-                draw(canvas, pathShadow, paintShadow, path, paint);
+                draw(canvas, pathShadow, path);
             }
 
             public Path getPath(boolean isShadow, boolean latest) {

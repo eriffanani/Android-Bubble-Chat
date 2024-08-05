@@ -31,7 +31,7 @@ public class BubbleInstagram extends FrameLayout {
     private int shadowColor;
     private float elevation = 0f;
     private boolean useCompatPadding;
-    private float borderSize = 0f;
+    private float shadowSize = 0f;
     private float strokeWidth = 0f;
     private int strokeColor = 0;
 
@@ -75,8 +75,8 @@ public class BubbleInstagram extends FrameLayout {
 
             elevation = a.getDimension(R.styleable.BubbleInstagram_elevation, dp(2));
             bubble.setElevation(elevation);
-            borderSize = dp(1) / 2f;
-            bubble.setBorderSize(elevation >= 1f ? borderSize : 0f);
+            shadowSize = dp(1) / 2f;
+            bubble.setShadowSize(elevation >= 1f ? shadowSize : 0f);
 
             int colorIncoming = Color.WHITE;
             int colorOutgoing = Color.parseColor("#3F63FE");
@@ -99,7 +99,7 @@ public class BubbleInstagram extends FrameLayout {
         paintShadow.setStyle(Paint.Style.STROKE);
         paintShadow.setColor(shadowColor);
         if (elevation >= 1f) {
-            paintShadow.setStrokeWidth(borderSize);
+            paintShadow.setStrokeWidth(shadowSize);
             paintShadow.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
             float minBlur = Math.max(1f, elevation);
             float blurSize = Math.min(minBlur, 30f);
