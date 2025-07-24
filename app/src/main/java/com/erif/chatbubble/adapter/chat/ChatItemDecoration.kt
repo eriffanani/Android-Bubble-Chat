@@ -5,7 +5,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 class ChatItemDecoration(
-    private val list: MutableList<ItemChat>
+    private val list: MutableList<ItemChat>,
+    private val useShadow: Boolean = true
 ): RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
@@ -13,8 +14,10 @@ class ChatItemDecoration(
     ) {
         super.getItemOffsets(outRect, view, parent, state)
         val position = parent.getChildAdapterPosition(view)
+
         val item = list[position]
-        if (position < (list.size - 1)) {
+        val lastPosition = list.size - 1
+        if (position < lastPosition) {
             val nextItem = list[position+1]
             if (nextItem.type != item.type)
                 with(outRect) {
@@ -22,7 +25,7 @@ class ChatItemDecoration(
                 }
             else
                 with(outRect) {
-                    top = -6
+                    top = if (useShadow) -6 else 0
                 }
         }
     }

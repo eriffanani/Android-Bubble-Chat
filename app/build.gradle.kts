@@ -1,16 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.android.kotlin)
 }
 
 android {
     namespace = "com.erif.chatbubble"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.erif.chatbubble"
         minSdk = 24
-        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

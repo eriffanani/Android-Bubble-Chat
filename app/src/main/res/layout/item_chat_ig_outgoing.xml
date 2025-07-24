@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="1dp"
-    android:paddingBottom="1dp">
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp">
 
     <com.erif.bubble.instagram.BubbleInstagram
         android:id="@+id/item_chat_ig_outgoing_bubble"
@@ -21,10 +21,10 @@
             android:id="@+id/item_chat_ig_outgoing_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Example"
+            android:text="@string/lorem"
             android:maxWidth="280dp"
+            android:textColor="@android:color/white"
             android:includeFontPadding="false"
-            android:textColor="@color/white"
             android:textSize="16sp"/>
 
     </com.erif.bubble.instagram.BubbleInstagram>

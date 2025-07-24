@@ -1,5 +1,6 @@
 package com.erif.bubble.whatsapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -32,6 +33,7 @@ public class BubbleWhatsapp extends FrameLayout {
     private float elevation = 0f;
     private float borderWidth = 0f;
     private int borderColor = Color.BLACK;
+    private boolean backgroundPressedEnabled = true;
 
     // Message Type
     private static final int INCOMING = Bubbles.BubbleType.INCOMING.value;
@@ -92,7 +94,8 @@ public class BubbleWhatsapp extends FrameLayout {
                 int colorPressIncoming = Color.parseColor("#EEEEEE");
                 int colorPressOutgoing = Color.parseColor("#CFEAC4");
                 int defaultPressedColor = bubbleType == INCOMING ? colorPressIncoming : colorPressOutgoing;
-                pressedColor = a.getColor(R.styleable.BubbleWhatsapp_pressedColor, defaultPressedColor);
+                pressedColor = a.getColor(R.styleable.BubbleWhatsapp_backgroundPressedColor, defaultPressedColor);
+                backgroundPressedEnabled = a.getBoolean(R.styleable.BubbleWhatsapp_backgroundPressedEnabled, true);
 
                 useCompatPadding = a.getBoolean(R.styleable.BubbleWhatsapp_useCompatPadding, true);
                 backgroundStyle = a.getInteger(R.styleable.BubbleWhatsapp_backgroundStyle, ANDROID);
@@ -122,6 +125,7 @@ public class BubbleWhatsapp extends FrameLayout {
             paintCard.setColor(backgroundColor);
             //paintCard.setMaskFilter(null);
             bubble.setPaintCard(paintCard);
+            setLayerType(LAYER_TYPE_SOFTWARE, paintCard);
 
             // Paint Shadow
             Paint paintShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -140,7 +144,7 @@ public class BubbleWhatsapp extends FrameLayout {
             paintBorder.setColor(borderColor);
             paintBorder.setStrokeWidth(borderWidth);
             bubble.setPaintBorder(paintBorder);
-            setLayerType(LAYER_TYPE_SOFTWARE, paintBorder);
+            //setLayerType(LAYER_TYPE_SOFTWARE, paintBorder);
         }
 
         setClipToPadding(false);
@@ -155,16 +159,25 @@ public class BubbleWhatsapp extends FrameLayout {
                     paddingV
             );
 
-        setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                paintCard.setColor(pressedColor);
-            } else if (event.getAction() == MotionEvent.ACTION_UP){
-                paintCard.setColor(backgroundColor);
-            }
-            invalidate();
-            return true;
-        });
+    }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (backgroundPressedEnabled && paintCard != null) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    paintCard.setColor(pressedColor);
+                    invalidate();
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP:
+                    paintCard.setColor(backgroundColor);
+                    invalidate();
+                    break;
+            }
+        }
+        return backgroundPressedEnabled || super.onTouchEvent(event);
     }
 
     @Override

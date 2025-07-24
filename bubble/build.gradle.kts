@@ -1,10 +1,26 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.maven)
 }
+
+/*afterEvaluate {
+    configure<PublishingExtension> {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = "com.github.eriffanani"
+                artifactId = "bubble-chat"
+                version = "1.0.0"
+                afterEvaluate {
+                    artifact(tasks.getByName("bundleReleaseAar"))
+                }
+            }
+        }
+    }
+}*/
 
 android {
     namespace = "com.erif.bubble"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -32,6 +48,7 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -87,7 +87,7 @@ class AdapterChatInstagram(
         fun bind(item: ItemChat) {
             txt.text = item.message
             bubble.setBubbleCondition(item.condition)
-            item.message?.let {
+            /*item.message?.let {
                 val maxWidthMessage = txt.maxWidth
                 val layoutMessage = StaticLayout.Builder
                     .obtain(it, 0, it.length, txt.paint, maxWidthMessage)
@@ -108,7 +108,7 @@ class AdapterChatInstagram(
                     param.width = FrameLayout.LayoutParams.WRAP_CONTENT
                 }
                 txt.layoutParams = param
-            }
+            }*/
         }
 
     }

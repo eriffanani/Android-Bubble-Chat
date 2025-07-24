@@ -11,6 +11,8 @@
         </attr>
         <attr name="cornerRadius"/>
         <attr name="backgroundColor"/>
+        <attr name="backgroundPressedColor" format="color"/>
+        <attr name="backgroundPressedEnabled" format="boolean" />
         <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
@@ -20,13 +22,15 @@
         </attr>
         <attr name="strokeColor"/>
         <attr name="strokeWidth"/>
-        <attr name="pressedColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="BubbleTelegram">
         <attr name="bubbleType"/>
         <attr name="cornerRadius"/>
+        <attr name="cornerRadiusGroup" format="dimension"/>
         <attr name="backgroundColor"/>
+        <attr name="backgroundPressedColor"/>
+        <attr name="backgroundPressedEnabled"/>
         <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
@@ -38,6 +42,8 @@
         <attr name="bubbleType"/>
         <attr name="cornerRadius"/>
         <attr name="backgroundColor"/>
+        <attr name="backgroundPressedColor"/>
+        <attr name="backgroundPressedEnabled"/>
         <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
@@ -47,7 +53,10 @@
     <declare-styleable name="BubbleInstagram">
         <attr name="bubbleType"/>
         <attr name="cornerRadius"/>
+        <attr name="cornerRadiusGroup"/>
         <attr name="backgroundColor"/>
+        <attr name="backgroundPressedColor"/>
+        <attr name="backgroundPressedEnabled"/>
         <attr name="useCompatPadding"/>
         <attr name="elevation"/>
         <attr name="android:shadowColor"/>
@@ -55,9 +64,9 @@
         <attr name="strokeColor"/>
         <attr name="bubbleConditions" format="flags">
             <flag name="single" value="0"/>
-            <flag name="latest" value="1"/>
+            <flag name="oldest" value="1"/>
             <flag name="inBetween" value="2"/>
-            <flag name="oldest" value="3"/>
+            <flag name="latest" value="3"/>
         </attr>
     </declare-styleable>
 

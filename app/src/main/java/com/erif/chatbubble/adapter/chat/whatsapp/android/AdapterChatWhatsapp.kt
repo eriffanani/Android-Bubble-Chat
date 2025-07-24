@@ -3,6 +3,7 @@ package com.erif.chatbubble.adapter.chat.whatsapp.android
 import android.text.StaticLayout
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -77,8 +78,12 @@ class AdapterChatWhatsapp(
                 }
                 txt.layoutParams = param
             }
-        }
 
+            itemView.setOnClickListener {
+
+            }
+
+        }
     }
 
     inner class HolderOutgoing(
@@ -91,9 +96,6 @@ class AdapterChatWhatsapp(
         fun bind(item: ItemChat) {
             txt.text = item.message
             bubble.setBubbleCondition(item.condition)
-            bubble.setOnClickListener {
-
-            }
             item.message?.let {
                 val maxWidthMessage = txt.maxWidth
                 val layoutMessage = StaticLayout.Builder

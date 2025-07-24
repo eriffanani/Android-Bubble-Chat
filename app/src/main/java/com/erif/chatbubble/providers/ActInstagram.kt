@@ -7,13 +7,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.erif.CountDown.CountDown
-import com.erif.bubble.instagram.BubbleInstagram
 import com.erif.chatbubble.R
-import com.erif.chatbubble.adapter.chat.ChatItemDecoration
 import com.erif.chatbubble.adapter.chat.Chats
 import com.erif.chatbubble.adapter.chat.instagram.AdapterChatInstagram
-import com.google.android.material.appbar.MaterialToolbar
 
 class ActInstagram : AppCompatActivity() {
 
@@ -37,7 +33,7 @@ class ActInstagram : AppCompatActivity() {
         val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
         recycler.layoutManager = manager
         recycler.adapter = adapter
-        recycler.addItemDecoration(ChatItemDecoration(list))
+        //recycler.addItemDecoration(ChatItemDecoration(list, false))
 
     }
 }

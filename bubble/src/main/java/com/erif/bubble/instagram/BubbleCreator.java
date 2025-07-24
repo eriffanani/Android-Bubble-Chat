@@ -1,21 +1,37 @@
 package com.erif.bubble.instagram;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.graphics.RectF;
 
 class BubbleCreator {
+
+    private Paint paintShadow, paintCard, paintBorder;
 
     private int width = 0;
     private int height = 0;
     private float shadowSize = 0f;
     private float cornerRadius = 0f;
+    private float cornerRadiusGroup = 0f;
     private float elevation = 0f;
     private boolean useShadow = false;
-    private float strokeWidth = 0f;
+    private float borderWidth = 0f;
 
-    private static final float SMALL_CORNER = 12f;
+    public void setPaintShadow(Paint paintShadow) {
+        this.paintShadow = paintShadow;
+    }
+
+    public void setPaintCard(Paint paintCard) {
+        this.paintCard = paintCard;
+    }
+
+    public void setPaintBorder(Paint paintBorder) {
+        this.paintBorder = paintBorder;
+    }
 
     public void setSize(int width, int height) {
         this.width = width;
@@ -30,36 +46,29 @@ class BubbleCreator {
         this.cornerRadius = cornerRadius;
     }
 
+    public void setCornerRadiusGroup(float cornerRadiusGroup) {
+        this.cornerRadiusGroup = cornerRadiusGroup;
+    }
+
     public void setElevation(float elevation) {
         this.elevation = elevation;
         useShadow = elevation >= 1f;
     }
 
-    public void setStrokeWidth(float width) {
-        this.strokeWidth = width;
+    public void setBorderWidth(float width) {
+        this.borderWidth = width;
     }
 
-    public Incoming incoming(
-            Canvas canvas, Paint paintShadow, Paint paintCard, Paint paintStroke
-    ) { return new Incoming(canvas, paintShadow, paintCard, paintStroke); }
+    public Incoming incoming() { return new Incoming(); }
 
     public class Drawing {
 
-        private final Canvas canvas;
-        private final Paint paintShadow;
-        private final Paint paintCard;
-        private final Paint paintStroke;
-
-        public Drawing(Canvas canvas, Paint paintShadow, Paint paintCard, Paint paintStroke) {
-            this.canvas = canvas;
-            this.paintShadow = paintShadow;
-            this.paintCard = paintCard;
-            this.paintStroke = paintStroke;
+        public Drawing() {
             elevation = Math.min(elevation, height / 10f);
         }
 
-        public void draw(float[] corners) {
-            if (useShadow) {
+        public void draw(float[] corners, Canvas canvas) {
+            if (useShadow && paintShadow != null) {
                 Path pathShadow = new Path();
                 RectF rectFShadow = new RectF();
                 float leftShadow = elevation * 1.5f;
@@ -74,31 +83,32 @@ class BubbleCreator {
             float top = 0f + elevation + shadowSize;
             float right = width - (elevation * 1.3f) - shadowSize;
             float bottom = height - (elevation * 2f) - shadowSize;
-            if (strokeWidth > 0f) {
+            if (borderWidth > 0f) {
                 Path pathStroke = new Path();
                 RectF rectFStroke = new RectF();
                 rectFStroke.set(
-                        left + strokeWidth / 2f,
-                        top + strokeWidth / 2f,
-                        right - strokeWidth / 2f,
-                        bottom - strokeWidth / 2f
+                        left + borderWidth / 2f,
+                        top + borderWidth / 2f,
+                        right - borderWidth / 2f,
+                        bottom - borderWidth / 2f
                 );
                 pathStroke.addRoundRect(rectFStroke, corners, Path.Direction.CW);
-                canvas.drawPath(pathStroke, paintStroke);
+                canvas.drawPath(pathStroke, paintBorder);
             }
 
-            Path path = new Path();
-            RectF rectF = new RectF();
-            float additional = Math.max(strokeWidth / 1.1f, 0f);
-            rectF.set(
-                    left + additional,
-                    top + additional,
-                    right - additional,
-                    bottom - additional
-            );
-            path.addRoundRect(rectF, corners, Path.Direction.CW);
-            canvas.drawPath(path, paintCard);
-
+            if (paintCard != null) {
+                Path path = new Path();
+                RectF rectF = new RectF();
+                float additional = Math.max(borderWidth / 1.1f, 0f);
+                rectF.set(
+                        left + additional,
+                        top + additional,
+                        right - additional,
+                        bottom - additional
+                );
+                path.addRoundRect(rectF, corners, Path.Direction.CW);
+                canvas.drawPath(path, paintCard);
+            }
         }
     }
 
@@ -106,105 +116,114 @@ class BubbleCreator {
 
         private final Drawing drawing;
         private final float mCorner = Math.min(cornerRadius, (height - (elevation * 2f) - shadowSize) / 2f);
+        private final float smallCorner = Math.min(cornerRadiusGroup, mCorner);
 
-        public Incoming(Canvas canvas, Paint paintShadow, Paint paintCard, Paint paintStroke) {
-            drawing = new Drawing(canvas, paintShadow, paintCard, paintStroke);
+        public Incoming() {
+            drawing = new Drawing();
         }
 
-        public void single() {
-            float[] corners =  new float[] {
-                    mCorner, mCorner, // Top Left
-                    mCorner, mCorner, // Top Right
-                    mCorner, mCorner, // Bottom Right
-                    mCorner, mCorner, // Bottom Left
-            };
-            drawing.draw(corners);
+        public void single(Canvas canvas) {
+            float[] corners = cornerRadius(mCorner);
+            drawing.draw(corners, canvas);
         }
 
-        public void oldest() {
-            float[] corners =  new float[] {
-                    mCorner, mCorner, // Top Left
-                    mCorner, mCorner, // Top Right
-                    mCorner, mCorner, // Bottom Right
-                    SMALL_CORNER, SMALL_CORNER // Bottom Left
-            };
-            drawing.draw(corners);
+        public void oldest(Canvas canvas) {
+            float[] corners = cornerRadius(mCorner, mCorner, mCorner, smallCorner);
+            drawing.draw(corners, canvas);
         }
 
-        public void inBetween() {
-            float[] corners =  new float[] {
-                    SMALL_CORNER, SMALL_CORNER, // Top Left
-                    mCorner, mCorner, // Top Right
-                    mCorner, mCorner, // Bottom Right
-                    SMALL_CORNER, SMALL_CORNER // Bottom Left
-            };
-            drawing.draw(corners);
+        public void inBetween(Canvas canvas) {
+            float[] corners = cornerRadius(smallCorner, mCorner, mCorner, smallCorner);
+            drawing.draw(corners, canvas);
         }
 
-        public void latest() {
-            float[] corners =  new float[] {
-                    SMALL_CORNER, SMALL_CORNER, // Top Left
-                    mCorner, mCorner, // Top Right
-                    mCorner, mCorner, // Bottom Right
-                    mCorner, mCorner // Bottom Left
-            };
-            drawing.draw(corners);
+        public void latest(Canvas canvas) {
+            float[] corners = cornerRadius(smallCorner, mCorner, mCorner, mCorner);
+            drawing.draw(corners, canvas);
         }
 
     }
 
-    public Outgoing outgoing(
-            Canvas canvas, Paint paintShadow, Paint paintCard, Paint paintStroke
-    ) { return new Outgoing(canvas, paintShadow, paintCard, paintStroke); }
+    public Outgoing outgoing() { return new Outgoing(); }
 
     class Outgoing {
 
         private final Drawing drawing;
         private final float mCorner = Math.min(cornerRadius, (height - (elevation * 2f) - shadowSize) / 2f);
+        private final float smallCorner = Math.min(cornerRadiusGroup, mCorner);
 
-        public Outgoing(Canvas canvas, Paint paintShadow, Paint paintCard, Paint paintStroke) {
-            drawing = new Drawing(canvas, paintShadow, paintCard, paintStroke);
+        public Outgoing() {
+            drawing = new Drawing();
         }
 
-        public void single() {
-            float[] corners =  new float[] {
-                    mCorner, mCorner, // Top Left
-                    mCorner, mCorner, // Top Right
-                    mCorner, mCorner, // Bottom Right
-                    mCorner, mCorner // Bottom Left
-            };
-            drawing.draw(corners);
+        public void single(Canvas canvas) {
+            float[] corners = cornerRadius(mCorner);
+            drawing.draw(corners, canvas);
         }
 
-        public void oldest() {
-            float[] corners =  new float[] {
-                    mCorner, mCorner, // Top Left
-                    mCorner, mCorner, // Top Right
-                    SMALL_CORNER, SMALL_CORNER, // Bottom Right
-                    mCorner, mCorner // Bottom Left
-            };
-            drawing.draw(corners);
+        public void oldest(Canvas canvas) {
+            float[] corners = cornerRadius(mCorner, mCorner, smallCorner, mCorner);
+            //drawing.draw(corners, canvas);
+            Path path = new Path();
+            float left = 0f;
+            float top = 0f;
+            float right = width;
+            float bottom = height;
+            RectF rectF = new RectF();
+            rectF.set(left, top, right, bottom);
+            path.addRoundRect(rectF, corners, Path.Direction.CW);
+
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas bitmapCanvas = new Canvas(bitmap);
+            //bitmapCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //this line moved outside if
+            bitmapCanvas.drawPath(path, paintCard);
+            canvas.drawBitmap(bitmap, 0, 0, paintCard);
         }
 
-        public void inBetween() {
-            float[] corners =  new float[] {
-                    mCorner, mCorner, // Top Left
-                    SMALL_CORNER, SMALL_CORNER, // Top Right
-                    SMALL_CORNER, SMALL_CORNER, // Bottom Right
-                    mCorner, mCorner // Bottom Left
-            };
-            drawing.draw(corners);
+        public void inBetween(Canvas canvas) {
+            float[] corners = cornerRadius(mCorner, smallCorner, smallCorner, mCorner);
+            drawing.draw(corners, canvas);
         }
 
-        public void latest() {
-            float[] corners =  new float[] {
-                    mCorner, mCorner, // Top Left
-                    SMALL_CORNER, SMALL_CORNER, // Top Right
-                    mCorner, mCorner, // Bottom Right
-                    mCorner, mCorner // Bottom Left
-            };
-            drawing.draw(corners);
+        public void latest(Canvas canvas) {
+            float[] corners = cornerRadius(mCorner, smallCorner, mCorner, mCorner);
+            //drawing.draw(corners, canvas);
+            Path path = new Path();
+            float left = 0f;
+            float top = 0f;
+            float right = width;
+            float bottom = height;
+            RectF rectF = new RectF();
+            rectF.set(left, top, right, bottom);
+            path.addRoundRect(rectF, corners, Path.Direction.CW);
+
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas bitmapCanvas = new Canvas(bitmap);
+            //bitmapCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //this line moved outside if
+            bitmapCanvas.drawPath(path, paintCard);
+            canvas.drawBitmap(bitmap, 0, 0, paintCard);
+
         }
+    }
+
+    private float[] cornerRadius(
+            float topLeft, float topRight, float bottomRight, float bottomLeft
+    ) {
+        return new float[]{
+                topLeft, topLeft, // Top Left
+                topRight, topRight, // Top Right
+                bottomRight, bottomRight, // Bottom Right
+                bottomLeft, bottomLeft // Bottom Left
+        };
+    }
+
+    private float[] cornerRadius(float size) {
+        return new float[] {
+                size, size, // Top Left
+                size, size, // Top Right
+                size, size, // Bottom Right
+                size, size // Bottom Left
+        };
     }
 
 }
